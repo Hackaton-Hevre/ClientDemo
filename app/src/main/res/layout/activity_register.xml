@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.hackaton.hevre.clientapp.RegisterActivity"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Register_Page"
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Type Name"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:id="@+id/username_text_re"
+
+        android:layout_gravity="center_horizontal"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Type Email"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:id="@+id/Email_text_re"
+        android:layout_gravity="center_horizontal"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="Type Password"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:id="@+id/password_text_re"
+        android:layout_gravity="center_horizontal"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:hint="Retype Password"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:id="@+id/repassword_text_re"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Register_button"
+        android:id="@+id/Registerbutton_text_re"
+        android:layout_marginTop="30dp"
+        android:onClick="registerRegButton_onClick"
+        />
+</LinearLayout>

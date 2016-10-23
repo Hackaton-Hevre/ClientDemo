@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">ClientApp</string>
+
+    <string name="title_add_task">Add Task</string>
+    <string name="action_settings">Settings</string>
+    <string name="Connect">Connect</string>
+    <string name="Register">Register</string>
+    <string name="Register_Page">Register</string>
+    <string name="Register_button">Register</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="ActiveItemList_home">Active Item List</string>
+    <string name="SearchForItem_home">Search For Item</string>
+    <string name="my_item_list">New Text</string>
+    <string name="search_view">Search_bar</string>
+    <string name="type_search_main">Type search</string>
+    <string name="search">Search</string>
+    <string name="Search_home">Search</string>
+    <string name="reminder_question">"Do you want to set a reminder for "</string>
+    <string name="confirmation_title">Product confirmation</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="entertask_hint">Enter Task</string>
+    <string name="addnewtask_button">Add new task</string>
+    <string name="action_logout">Logout</string>
+    <string name="rememberMe_checkbox">Remember me</string>
+</resources>
