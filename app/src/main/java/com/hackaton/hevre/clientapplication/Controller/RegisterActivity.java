@@ -76,6 +76,10 @@ public class RegisterActivity extends ActionBarActivity {
         if(status.equals(LoginStatus.SUCCESS))
         {
             Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+            Bundle b = new Bundle();
+            String username = ((TextView) findViewById(R.id.username_text_re)).getText().toString();
+            b.putString("user", username); //Your id
+            intent.putExtras(b); //Put your id to your next Intent
             startActivity(intent);
             finish();
         }
