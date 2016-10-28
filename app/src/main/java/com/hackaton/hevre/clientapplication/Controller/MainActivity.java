@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +18,7 @@ import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.R;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     public static final String MAIN_ACTIVITY_PREFERENCES = "main_activity_preferences";
     IModelService mModelService = ModelService.getInstance();
@@ -30,11 +30,13 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.main_toolbar));
+
         mModelService.setDelegate(this);
         mUsernameEdit = (EditText) findViewById(R.id.username_text);
         mPasswordEdit = (EditText) findViewById(R.id.password_text);
         mRememberMeCheckBox = (CheckBox) findViewById(R.id.rememberMe_checkBox);
-
         autoLogin();
     }
 
