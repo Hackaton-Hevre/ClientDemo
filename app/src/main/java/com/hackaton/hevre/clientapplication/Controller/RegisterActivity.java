@@ -23,6 +23,8 @@ public class RegisterActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.register_toolbar));
         mModelService.setDelegate(this);
     }
 

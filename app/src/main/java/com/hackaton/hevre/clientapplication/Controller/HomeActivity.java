@@ -34,6 +34,8 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mModelService.setDelegate(this);
+
+        setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.home_toolbar));
         Bundle b = getIntent().getExtras();
         if(b != null) {
             mUserName = b.getString("user");
