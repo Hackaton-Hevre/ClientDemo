@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class BusinessDBTool
 {
     /* constants */
-    public static final String DBNAME = "businesses.db";
+    public static final String DBNAME = "src/main/res/raw/businesses.db";
     public static final String BUSINESS_IN_RANGE_STATEMENT = "select * from Locations"
             + " where (lon between %1$f AND %2$f) AND (lat between %3$f AND %4$f)";
     // distance calculations

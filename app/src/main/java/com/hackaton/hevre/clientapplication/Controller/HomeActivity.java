@@ -3,6 +3,10 @@ package com.hackaton.hevre.clientapplication.Controller;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 //import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,6 +27,8 @@ import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
+import com.hackaton.hevre.clientapplication.DB.BusinessDBTool;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +39,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
     ArrayList<String> mTasks;
     ListView mListView;
     ArrayAdapter mAdapter;
+    BusinessDBTool dbTool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +66,12 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         mListView.setOnItemClickListener(this);
 
         mModelService.getUserTaskList(mUserName);
+        try {
+            dbTool = BusinessDBTool.getInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -119,8 +132,22 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        // show another view with businesses locations
+        CharSequence msg = ((TextView) view).getText();
+
+        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        String provider = locationManager.getBestProvider(new Criteria(), true);
+
+        Location locations = locationManager.getLastKnownLocation(provider);
+        List<String>  providerList = locationManager.getAllProviders();
+        if(null!=locations && null!=providerList && providerList.size()>0){
+            double longitude = locations.getLongitude();
+            double latitude = locations.getLatitude();
+            msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
+        }
+
         Toast.makeText(getApplicationContext(),
-                ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+                msg, Toast.LENGTH_SHORT).show();
     }
 
     public void logout_onclick(MenuItem item) {
