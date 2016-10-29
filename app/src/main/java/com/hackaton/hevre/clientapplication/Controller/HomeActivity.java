@@ -1,16 +1,22 @@
 package com.hackaton.hevre.clientapplication.Controller;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+//import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hackaton.hevre.clientapplication.Model.IModelService;
@@ -21,7 +27,7 @@ import com.hackaton.hevre.clientapplication.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends ActionBarActivity {
+public class HomeActivity extends AppCompatActivity implements OnItemClickListener {
 
     IModelService mModelService = ModelService.getInstance();
     String mUserName;
@@ -31,15 +37,18 @@ public class HomeActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mModelService.setDelegate(this);
 
-        setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.home_toolbar));
         Bundle b = getIntent().getExtras();
         if(b != null) {
             mUserName = b.getString("user");
         }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
+        setSupportActionBar(toolbar);
 
         mTasks = new ArrayList<String>();
 
@@ -48,6 +57,7 @@ public class HomeActivity extends ActionBarActivity {
 
         mListView = (ListView) findViewById(R.id.task_list);
         mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
 
         mModelService.getUserTaskList(mUserName);
     }
@@ -108,6 +118,12 @@ public class HomeActivity extends ActionBarActivity {
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Toast.makeText(getApplicationContext(),
+                ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+    }
+
     public void logout_onclick(MenuItem item) {
         SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MAIN_ACTIVITY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -117,4 +133,6 @@ public class HomeActivity extends ActionBarActivity {
         startActivity(intent);
         finish();
     }
+
+
 }
