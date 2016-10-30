@@ -75,6 +75,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
     protected void onDestroy() {
         dbTool.close();
+        super.onDestroy();
     }
 
     @Override
