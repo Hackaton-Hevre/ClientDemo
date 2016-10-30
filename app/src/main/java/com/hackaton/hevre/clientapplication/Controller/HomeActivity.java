@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -22,6 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hackaton.hevre.clientapplication.DB.DatabaseAccess;
 import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
@@ -29,6 +29,7 @@ import com.hackaton.hevre.clientapplication.R;
 
 import com.hackaton.hevre.clientapplication.DB.BusinessDBTool;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +39,9 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
     String mUserName;
     ArrayList<String> mTasks;
     ListView mListView;
-    ArrayAdapter mAdapter;
-    BusinessDBTool dbTool;
+    ArrayAdapter<String> mAdapter;
+    DatabaseAccess dbTool;
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +68,13 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         mListView.setOnItemClickListener(this);
 
         mModelService.getUserTaskList(mUserName);
-        try {
-            dbTool = BusinessDBTool.getInstance();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        dbTool = DatabaseAccess.getInstance(this.getBaseContext());
+        dbTool.open();
+    }
 
+    protected void onDestroy() {
+        dbTool.close();
     }
 
     @Override
@@ -132,29 +135,50 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        // show another view with businesses locations
         CharSequence msg = ((TextView) view).getText();
 
-        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        // show another view with businesses locations
         String provider = locationManager.getBestProvider(new Criteria(), true);
-
         Location locations = locationManager.getLastKnownLocation(provider);
         List<String>  providerList = locationManager.getAllProviders();
+        ArrayList<String> businesses = new ArrayList<>();
         if(null!=locations && null!=providerList && providerList.size()>0){
             double longitude = locations.getLongitude();
             double latitude = locations.getLatitude();
-            msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
+            try {
+                businesses = dbTool.getBusinessesInRange(longitude, latitude, 0.1);
+                if (businesses.isEmpty()) {
+                    msg = "No nearby businesses was found";
+                    System.out.println("no businesses found");
+                }
+                else {
+                    System.out.println(businesses.get(0));
+                    Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
+                    intent.putExtra("businessesList", businesses);
+                    Bundle b = new Bundle();
+                    startActivity(intent);
+//                    finish();
+                }
+            }
+            catch (NullPointerException e) {
+                e.printStackTrace();
+                msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
+            }
+            finally {
+                Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
+                intent.putExtra("businessesList", businesses);
+                startActivity(intent);
+            }
         }
-
-        Toast.makeText(getApplicationContext(),
-                msg, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(),
+//                msg, Toast.LENGTH_SHORT).show();
     }
 
     public void logout_onclick(MenuItem item) {
         SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MAIN_ACTIVITY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putBoolean("rememberMe", false);
-        editor.commit();
+        editor.apply();
         Intent intent = new Intent(HomeActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             b.putString("user", mUsernameEdit.getText().toString()); //Your id
             intent.putExtras(b); //Put your id to your next Intent
             startActivity(intent);
-            finish();
+//            finish();
         }
     }
 }
