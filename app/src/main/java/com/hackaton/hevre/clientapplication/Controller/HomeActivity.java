@@ -3,38 +3,38 @@ package com.hackaton.hevre.clientapplication.Controller;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-//import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hackaton.hevre.clientapplication.DB.BusinessDBTool;
+import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.IModelService;
+import com.hackaton.hevre.clientapplication.Model.LocationModelService;
 import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
-import com.hackaton.hevre.clientapplication.DB.BusinessDBTool;
-
 import java.util.ArrayList;
 import java.util.List;
+
+//import android.support.v7.app.ActionBarActivity;
 
 public class HomeActivity extends AppCompatActivity implements OnItemClickListener {
 
     IModelService mModelService = ModelService.getInstance();
+    ILocationModelService mLocationService;
     String mUserName;
     ArrayList<String> mTasks;
     ListView mListView;
@@ -46,8 +46,13 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mModelService.setDelegate(this);
 
+        /* set this activity to be delegated by two model classes */
+        mModelService.setDelegate(this);
+        mLocationService = new LocationModelService(this);
+        mLocationService.setDelegate(this);
+
+        /* get the user name connected to the application */
         Bundle b = getIntent().getExtras();
         if(b != null) {
             mUserName = b.getString("user");
@@ -135,7 +140,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         // show another view with businesses locations
         CharSequence msg = ((TextView) view).getText();
 
-        LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        /*LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         String provider = locationManager.getBestProvider(new Criteria(), true);
 
         Location locations = locationManager.getLastKnownLocation(provider);
@@ -144,7 +149,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
             double longitude = locations.getLongitude();
             double latitude = locations.getLatitude();
             msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
-        }
+        }*/
 
         Toast.makeText(getApplicationContext(),
                 msg, Toast.LENGTH_SHORT).show();
@@ -160,5 +165,13 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         finish();
     }
 
-
+    public void locationChanged_callback(Location location) {
+        String msg = "";
+        if(null!=location){
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
+            msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
+        }
+        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+    }
 }
