@@ -48,6 +48,9 @@ public class LocationModelService implements ILocationModelService, LocationList
 
     @Override
     public Location getCurrentLocation() {
+        String provider = mLocationManager.getBestProvider(new Criteria(), true);
+        Location locations = mLocationManager.getLastKnownLocation(provider);
+        mLastLocation = locations;
         return mLastLocation;
     }
 

@@ -17,7 +17,7 @@ import com.hackaton.hevre.clientapplication.R;
 
 public class RegisterActivity extends ActionBarActivity {
 
-    IModelService mModelService = ModelService.getInstance();
+    IModelService mModelService = ModelService.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

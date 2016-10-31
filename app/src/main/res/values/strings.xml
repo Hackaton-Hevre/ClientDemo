@@ -8,6 +8,7 @@
     <string name="Register_Page">Register</string>
     <string name="Register_button">Register</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_task">TaskActivity</string>
     <string name="title_activity_register">RegisterActivity</string>
     <string name="ActiveItemList_home">Active Item List</string>
     <string name="SearchForItem_home">Search For Item</string>

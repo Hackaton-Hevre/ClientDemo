@@ -3,20 +3,26 @@ package com.hackaton.hevre.clientapplication.Model;
 import android.app.Activity;
 import android.location.Location;
 
+import java.util.ArrayList;
+
 /**
  * Created by אביחי on 23/10/2016.
  */
 public interface IModelService {
 
-    public void setDelegate(Activity activity);
+    void setDelegate(Activity activity);
 
-    public void login(String userName, String password);
+    void login(String userName, String password);
 
-    public void register(String userName, String password, String email);
+    void register(String userName, String password, String email);
 
-    public void addProduct(String userName, String productName);
+    void addProduct(String userName, String productName);
 
-    public void findReleventBusinesses(String username, Location location);
+    void findReleventBusinesses(String username, Location location);
 
-    public void getUserTaskList(String userName);
+    void getUserTaskList(String userName);
+
+    ArrayList<String> getBusinessesInRange(double longitude, double latitude, double v);
+
+    void closeDb();
 }

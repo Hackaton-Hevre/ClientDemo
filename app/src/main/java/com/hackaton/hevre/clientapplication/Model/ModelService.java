@@ -1,12 +1,15 @@
 package com.hackaton.hevre.clientapplication.Model;
 
 import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 
 import com.hackaton.hevre.clientapplication.Controller.HomeActivity;
 import com.hackaton.hevre.clientapplication.Controller.MainActivity;
 import com.hackaton.hevre.clientapplication.Controller.RegisterActivity;
+import com.hackaton.hevre.clientapplication.DB.DatabaseAccess;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,16 +17,21 @@ import java.util.List;
  */
 public class ModelService implements IModelService {
 
+    private Context mContext;
     private Activity activity = null;
     private BusinessController mBusinessController;
     private UserController mUsersController;
     private ProductController mProductController;
-    private static ModelService instance = new ModelService();
+    private static ModelService instance;
+    private DatabaseAccess mDbTool;
 
-    private ModelService(){
+    private ModelService(Context context){
+        mContext = context;
         mBusinessController = new BusinessController();
         mUsersController = new UserController();
         mProductController = new ProductController();
+        mDbTool = DatabaseAccess.getInstance(context);
+        mDbTool.open();
 
         // add some static data
         addProduct2("avichay", "Akana");
@@ -45,13 +53,18 @@ public class ModelService implements IModelService {
         addProduct2("rozbaum", "Running shoes");
     }
 
-    public static ModelService getInstance()
+    public static ModelService getInstance(Context context)
     {
+        if (instance == null)
+        {
+            instance = new ModelService(context);
+        }
         return instance;
     }
 
     @Override
     public void setDelegate(Activity activity) {
+        this.mDbTool.setOpenHelper(activity);
         this.activity = activity;
     }
 
@@ -102,6 +115,16 @@ public class ModelService implements IModelService {
     public void getUserTaskList(String userName) {
         List<String> UserProducts = mUsersController.getUserTaskList(userName);
         ((HomeActivity) activity).UserProducts_callback(UserProducts);
+    }
+
+    @Override
+    public ArrayList<String> getBusinessesInRange(double longitude, double latitude, double v) {
+        return mDbTool.getBusinessesInRange(longitude, latitude, v);
+    }
+
+    @Override
+    public void closeDb() {
+        mDbTool.close();
     }
 
 

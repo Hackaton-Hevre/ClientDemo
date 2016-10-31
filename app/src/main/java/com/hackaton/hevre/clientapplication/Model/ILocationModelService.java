@@ -9,8 +9,8 @@ import android.location.Location;
 
 public interface ILocationModelService {
 
-    public void setDelegate(Activity activity);
+    void setDelegate(Activity activity);
 
-    public Location getCurrentLocation();
+    Location getCurrentLocation();
 
 }
