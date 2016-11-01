@@ -53,6 +53,14 @@ public class ModelService implements IModelService {
         addProduct2("rozbaum", "Running shoes");
     }
 
+    /* static methods */
+
+    /**
+     * Return a singleton instance of ModelService.
+     *
+     * @param context the Context
+     * @return the instance of ModelService
+     */
     public static ModelService getInstance(Context context)
     {
         if (instance == null)
@@ -61,6 +69,10 @@ public class ModelService implements IModelService {
         }
         return instance;
     }
+
+    /* methods */
+
+    /* All the contracts appears in the interface file */
 
     @Override
     public void setDelegate(Activity activity) {
@@ -80,7 +92,8 @@ public class ModelService implements IModelService {
         ((RegisterActivity) activity).register_callback(status);
     }
 
-    public void addProduct2(String userName, String productName) {
+    /* a helper function for static demo only */
+    private void addProduct2(String userName, String productName) {
         Product product = mProductController.getProductByName(productName);
         mUsersController.addProduct(userName, product);
     }
@@ -107,8 +120,14 @@ public class ModelService implements IModelService {
     }
 
     @Override
-    public void findReleventBusinesses(String username, Location location) {
-
+    public void findRelevantBusinesses(String username, Location location) {
+        /**
+         * 1. get the user
+         * 2. get all his tasks
+         * 3. collect all the tags from the tasks
+         * 4. search for close businesses with the relevant tags
+         * 5. push notification with the relevant businesses for the user
+         */
     }
 
     @Override
@@ -118,8 +137,8 @@ public class ModelService implements IModelService {
     }
 
     @Override
-    public ArrayList<String> getBusinessesInRange(double longitude, double latitude, double v) {
-        return mDbTool.getBusinessesInRange(longitude, latitude, v);
+    public ArrayList<String> getBusinessesInRange(double longitude, double latitude, double radius) {
+        return mDbTool.getBusinessesInRange(longitude, latitude, radius);
     }
 
     @Override

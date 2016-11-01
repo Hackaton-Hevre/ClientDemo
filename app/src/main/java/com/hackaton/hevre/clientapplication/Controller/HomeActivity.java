@@ -156,7 +156,6 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
                     intent.putExtra("businessesList", businesses);
                     Bundle b = new Bundle();
                     startActivity(intent);
-//                    finish();
                 }
             }
             catch (NullPointerException e) {
@@ -171,6 +170,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
+    /* handles the logout click */
     public void logout_onclick(MenuItem item) {
         SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MAIN_ACTIVITY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -181,13 +181,17 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         finish();
     }
 
+    /* handles the update of the location for the user */
     public void locationChanged_callback(Location location) {
         String msg = "";
         if(null!=location){
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
             msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
+            // calls the function that will check for relevant close businesses
+            mModelService.findRelevantBusinesses(mUserName, location);
         }
-        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+
     }
 }
