@@ -82,7 +82,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mModelService.closeDb();
+        //mModelService.closeDb();
     }
 
     @Override
