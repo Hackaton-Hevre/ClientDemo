@@ -73,6 +73,13 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mModelService.setDelegate(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mModelService.closeDb();
