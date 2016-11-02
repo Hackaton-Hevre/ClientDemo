@@ -1,10 +1,12 @@
 package com.hackaton.hevre.clientapplication.Controller;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
@@ -27,6 +30,8 @@ import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 //import android.support.v7.app.ActionBarActivity;
 
@@ -38,6 +43,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
     ArrayList<String> mTasks;
     ListView mListView;
     ArrayAdapter<String> mAdapter;
+    int mNotificationId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +77,12 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
         mModelService.getUserTaskList(mUserName);
 
+    }
+
+    private int getNextNotificationId()
+    {
+        mNotificationId++;
+        return mNotificationId;
     }
 
     @Override
@@ -200,5 +212,19 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         }
         //Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
 
+    }
+
+    /* gets all the nearest relevant businesses for the user by his location and sends notification */
+    public void pushNotification_callback(ArrayList<Business> relevantBusinesses) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Don't forget your task!")
+                        .setContentText(relevantBusinesses.get(0).getName() + " is only " + relevantBusinesses.get(0).getLocation().distanceTo(mLocationService.getCurrentLocation()) + " meters away!");
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
     }
 }

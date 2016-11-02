@@ -128,6 +128,16 @@ public class ModelService implements IModelService {
          * 4. search for close businesses with the relevant tags
          * 5. push notification with the relevant businesses for the user
          */
+        ArrayList<Business> relevantBusinesses = new ArrayList<>();
+        relevantBusinesses.add(mBusinessController.getBusinessById(0));
+        try
+        {
+            ((HomeActivity) activity).pushNotification_callback(relevantBusinesses);
+        }
+        catch (Exception e)
+        {
+
+        }
     }
 
     @Override
