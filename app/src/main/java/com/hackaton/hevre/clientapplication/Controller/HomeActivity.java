@@ -1,10 +1,12 @@
 package com.hackaton.hevre.clientapplication.Controller;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -18,7 +20,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.BusinessRowItem;
+import com.hackaton.hevre.clientapplication.Model.BusinessRowItem; // merge this with business object
+import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
@@ -28,6 +31,8 @@ import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 //import android.support.v7.app.ActionBarActivity;
 
@@ -39,6 +44,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
     ArrayList<String> mTasks;
     ListView mListView;
     ArrayAdapter<String> mAdapter;
+    int mNotificationId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +79,22 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
     }
 
+    private int getNextNotificationId()
+    {
+        mNotificationId++;
+        return mNotificationId;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mModelService.setDelegate(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        mModelService.closeDb();
+        //mModelService.closeDb();
     }
 
     @Override
@@ -156,7 +175,6 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
                     intent.putExtra("taskName", ((TextView) view).getText());
                     Bundle b = new Bundle();
                     startActivity(intent);
-//                    finish();
                 }
             }
             catch (NullPointerException e) {
@@ -171,6 +189,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         }
     }
 
+    /* handles the logout click */
     public void logout_onclick(MenuItem item) {
         SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MAIN_ACTIVITY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
@@ -181,13 +200,31 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         finish();
     }
 
+    /* handles the update of the location for the user */
     public void locationChanged_callback(Location location) {
         String msg = "";
         if(null!=location){
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
             msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
+            // calls the function that will check for relevant close businesses
+            mModelService.findRelevantBusinesses(mUserName, location);
         }
-        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
+
+    }
+
+    /* gets all the nearest relevant businesses for the user by his location and sends notification */
+    public void pushNotification_callback(ArrayList<Business> relevantBusinesses) {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Don't forget your task!")
+                        .setContentText(relevantBusinesses.get(0).getName() + " is only " + relevantBusinesses.get(0).getLocation().distanceTo(mLocationService.getCurrentLocation()) + " meters away!");
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
     }
 }

@@ -108,6 +108,18 @@ public class BusinessController {
         return isAdded;
     }
 
+    public Business getBusinessById(int id)
+    {
+        Business b = null;
+
+        if (mBusinesses.containsKey(id))
+        {
+            b = mBusinesses.get(id);
+        }
+
+        return b;
+    }
+
     private int nextId()
     {
         mIdCounter++;
