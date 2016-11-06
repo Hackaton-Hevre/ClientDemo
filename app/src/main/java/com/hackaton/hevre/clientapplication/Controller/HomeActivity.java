@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hackaton.hevre.clientapplication.Model.BusinessRowItem;
 import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
@@ -59,7 +60,6 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
-
         mTasks = new ArrayList<String>();
 
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mTasks);
@@ -140,20 +140,20 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
         // show another view with businesses locations
         Location locations = mLocationService.getCurrentLocation();
-        ArrayList<String> businesses = new ArrayList<>();
+        ArrayList<BusinessRowItem> businesses = new ArrayList<>();
         if(null!=locations){
             double longitude = locations.getLongitude();
             double latitude = locations.getLatitude();
             try {
                 businesses = mModelService.getBusinessesInRange(longitude, latitude, 0.1);
                 if (businesses.isEmpty()) {
-                    msg = "No nearby businesses was found";
                     System.out.println("no businesses found");
                 }
                 else {
                     System.out.println(businesses.get(0));
                     Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
                     intent.putExtra("businessesList", businesses);
+                    intent.putExtra("taskName", ((TextView) view).getText());
                     Bundle b = new Bundle();
                     startActivity(intent);
 //                    finish();

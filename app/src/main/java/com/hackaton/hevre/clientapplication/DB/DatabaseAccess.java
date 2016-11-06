@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.hackaton.hevre.clientapplication.Model.BusinessRowItem;
+
 import java.util.ArrayList;
 
 /**
@@ -88,7 +90,7 @@ public class DatabaseAccess {
      *  @param radius the range to expand around the center point. units in km.
      *  @return list of the names of the relevant busineses.
      */
-    public ArrayList<String> getBusinessesInRange(double lon, double lat, double radius) {
+    public ArrayList<BusinessRowItem> getBusinessesInRange(double lon, double lat, double radius) {
 
         /* retrieve Cursor object with the database query results */
         String query = BusinessDBTool.getBusinessesInRangeQuery(lon, lat, radius);
@@ -96,11 +98,11 @@ public class DatabaseAccess {
         Cursor cursor = database.rawQuery(query, null);
         cursor.moveToFirst();
 
-        ArrayList<String> results = new ArrayList<>();
-        while (!cursor.isAfterLast()) {
-            results.add(cursor.getString(0));
-            cursor.moveToNext();
-        }
+        ArrayList<BusinessRowItem> results = new ArrayList<>();
+//        while (!cursor.isAfterLast()) {
+//            results.add(cursor.getString(0));
+//            cursor.moveToNext();
+//        }
         cursor.close();
         return results;
     }

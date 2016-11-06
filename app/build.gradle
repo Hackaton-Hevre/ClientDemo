@@ -19,9 +19,13 @@ android {
     }
 }
 
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.2.1'
-//    compile 'org.sqldroid:sqldroid:1.0.3'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
+//    compile 'com.github.qiugang:EditTag:v1.2.3'
 }

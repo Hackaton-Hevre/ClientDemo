@@ -25,4 +25,5 @@
     <string name="addnewtask_button">Add new task</string>
     <string name="action_logout">Logout</string>
     <string name="rememberMe_checkbox">Remember me</string>
+    <string name="lorem_ipsum">Lorem ipsum</string>
 </resources>

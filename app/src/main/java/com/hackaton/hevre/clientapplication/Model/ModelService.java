@@ -118,8 +118,11 @@ public class ModelService implements IModelService {
     }
 
     @Override
-    public ArrayList<String> getBusinessesInRange(double longitude, double latitude, double v) {
-        return mDbTool.getBusinessesInRange(longitude, latitude, v);
+    public ArrayList<BusinessRowItem> getBusinessesInRange(double longitude, double latitude, double v) {
+        ArrayList<BusinessRowItem> result = new ArrayList();
+        result.add(new BusinessRowItem("Apple Store", "Beit Eliezer, Ha'sholtim 5", 34.7923249, 31.2504486));
+        return result;
+//        return mDbTool.getBusinessesInRange(longitude, latitude, v);
     }
 
     @Override

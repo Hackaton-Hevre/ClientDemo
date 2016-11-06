@@ -22,7 +22,7 @@ public interface IModelService {
 
     void getUserTaskList(String userName);
 
-    ArrayList<String> getBusinessesInRange(double longitude, double latitude, double v);
+    ArrayList<BusinessRowItem> getBusinessesInRange(double longitude, double latitude, double v);
 
     void closeDb();
 }
