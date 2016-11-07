@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,12 +19,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.BusinessRowItem; // merge this with business object
 import com.hackaton.hevre.clientapplication.Model.Business;
+import com.hackaton.hevre.clientapplication.Model.BusinessRowItem;
 import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
-import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
-import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
@@ -36,9 +33,8 @@ import java.util.List;
 
 //import android.support.v7.app.ActionBarActivity;
 
-public class HomeActivity extends AppCompatActivity implements OnItemClickListener {
+public class HomeActivity extends AppCallbackActivity implements OnItemClickListener {
 
-    IModelService mModelService;
     ILocationModelService mLocationService;
     String mUserName;
     ArrayList<String> mTasks;
@@ -52,9 +48,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mModelService = ModelService.getInstance(this);
         /* set this activity to be delegated by two model classes */
-        mModelService.setDelegate(this);
         mLocationService = new LocationModelService(this);
         mLocationService.setDelegate(this);
 
@@ -86,16 +80,9 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mModelService.setDelegate(this);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        //mModelService.closeDb();
-    }
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -123,7 +110,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         String task = ((EditText) findViewById(R.id.taskadd_editText)).getText().toString();
         if (task.equals(""))
         {
-            Toast.makeText(getBaseContext(), "Empty Task, pleas enter new one!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), R.string.homeActivity_emptyTaskAlert, Toast.LENGTH_LONG).show();
         }
         else
         {
@@ -134,14 +121,14 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
     public void addtask_callback(TaskingStatus status)
     {
-        String strMsg="OK, Task has been added!";
+        String strMsg = getString(R.string.homeActivity_taskAdded);
         if(status.equals(TaskingStatus.ILLEGAL_TASK))
         {
-            strMsg="ILLEGAL TASK, task has not been found";
+            strMsg = getString(R.string.homeActivity_illegalTaskAlert);
         }
         else if(status.equals(TaskingStatus.TASK_ALREADY_EXISTS))
         {
-            strMsg="your TASK is already exist";
+            strMsg=getString(R.string.homeActivity_taskExistsAlert);
         }
         ((EditText) findViewById(R.id.taskadd_editText)).setText("");
         Toast.makeText(getBaseContext(), strMsg, Toast.LENGTH_LONG).show();
@@ -166,7 +153,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
             try {
                 businesses = mModelService.getBusinessesInRange(longitude, latitude, 0.1);
                 if (businesses.isEmpty()) {
-                    System.out.println("no businesses found");
+                    //System.out.println("no businesses found");
                 }
                 else {
                     System.out.println(businesses.get(0));
@@ -179,7 +166,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
             }
             catch (NullPointerException e) {
                 e.printStackTrace();
-                msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
+                //msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
             }
             finally {
                 Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
@@ -206,7 +193,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         if(null!=location){
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
+            //msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
             // calls the function that will check for relevant close businesses
             mModelService.findRelevantBusinesses(mUserName, location);
         }

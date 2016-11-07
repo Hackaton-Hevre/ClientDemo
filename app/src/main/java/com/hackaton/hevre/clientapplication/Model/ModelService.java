@@ -1,12 +1,9 @@
 package com.hackaton.hevre.clientapplication.Model;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 
-import com.hackaton.hevre.clientapplication.Controller.HomeActivity;
-import com.hackaton.hevre.clientapplication.Controller.MainActivity;
-import com.hackaton.hevre.clientapplication.Controller.RegisterActivity;
+import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
 import com.hackaton.hevre.clientapplication.DB.DatabaseAccess;
 
 import java.util.ArrayList;
@@ -18,7 +15,7 @@ import java.util.List;
 public class ModelService implements IModelService {
 
     private Context mContext;
-    private Activity activity = null;
+    private AppCallbackActivity activity = null;
     private BusinessController mBusinessController;
     private UserController mUsersController;
     private ProductController mProductController;
@@ -75,7 +72,7 @@ public class ModelService implements IModelService {
     /* All the contracts appears in the interface file */
 
     @Override
-    public void setDelegate(Activity activity) {
+    public void setDelegate(AppCallbackActivity activity) {
         this.mDbTool.setOpenHelper(activity);
         this.activity = activity;
     }
@@ -83,13 +80,13 @@ public class ModelService implements IModelService {
     @Override
     public void login(String userName, String password) {
         LoginStatus status = mUsersController.login(userName, password);
-        ((MainActivity) activity).loginCallback(status);
+        activity.loginCallback(status);
     }
 
     @Override
     public void register(String userName, String password, String email) {
         LoginStatus status = mUsersController.addUser(userName, password, email);
-        ((RegisterActivity) activity).register_callback(status);
+        activity.register_callback(status);
     }
 
     /* a helper function for static demo only */
@@ -116,7 +113,7 @@ public class ModelService implements IModelService {
             }
         }
 
-        ((HomeActivity) activity).addtask_callback(status);
+        activity.addtask_callback(status);
     }
 
     @Override
@@ -132,7 +129,7 @@ public class ModelService implements IModelService {
         relevantBusinesses.add(mBusinessController.getBusinessById(0));
         try
         {
-            ((HomeActivity) activity).pushNotification_callback(relevantBusinesses);
+            activity.pushNotification_callback(relevantBusinesses);
         }
         catch (Exception e)
         {
@@ -143,7 +140,7 @@ public class ModelService implements IModelService {
     @Override
     public void getUserTaskList(String userName) {
         List<String> UserProducts = mUsersController.getUserTaskList(userName);
-        ((HomeActivity) activity).UserProducts_callback(UserProducts);
+        activity.UserProducts_callback(UserProducts);
     }
 
     @Override

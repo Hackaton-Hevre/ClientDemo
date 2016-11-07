@@ -1,7 +1,8 @@
 package com.hackaton.hevre.clientapplication.Model;
 
-import android.app.Activity;
 import android.location.Location;
+
+import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public interface IModelService {
      *
      * @param activity - the activity that now holds the modelInstance and will get the callbacks
      */
-    void setDelegate(Activity activity);
+    void setDelegate(AppCallbackActivity activity);
 
     /**
      * Connects the user to the system.

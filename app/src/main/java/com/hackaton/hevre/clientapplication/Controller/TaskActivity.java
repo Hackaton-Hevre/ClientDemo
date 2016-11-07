@@ -1,7 +1,6 @@
 package com.hackaton.hevre.clientapplication.Controller;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.internal.widget.AdapterViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -9,11 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.BusinessListAdapter;
 import com.hackaton.hevre.clientapplication.Model.BusinessRowItem;
-import com.hackaton.hevre.clientapplication.Model.IModelService;
-import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;
@@ -22,18 +18,15 @@ import java.util.ArrayList;
  * Created by Ron on 30/10/2016.
  */
 
-public class TaskActivity extends AppCompatActivity implements AdapterViewCompat.OnItemClickListener {
+public class TaskActivity extends AppCallbackActivity implements AdapterViewCompat.OnItemClickListener {
 
     private ListView mListView;
     private TextView mTitle;
-    private IModelService mModelService = ModelService.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
-
-        mModelService.setDelegate(this);
         ArrayList<BusinessRowItem> businesses = (ArrayList<BusinessRowItem>) getIntent().getSerializableExtra("businessesList");
         String taskName = (String) getIntent().getSerializableExtra("taskName");
 

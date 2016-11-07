@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,16 +11,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LoginStatus;
-import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.R;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCallbackActivity {
 
     public static final String MAIN_ACTIVITY_PREFERENCES = "main_activity_preferences";
-    IModelService mModelService;
     EditText mUsernameEdit;
     EditText mPasswordEdit;
     CheckBox mRememberMeCheckBox;
@@ -31,11 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mModelService = ModelService.getInstance(this);
 
         setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.main_toolbar));
 
-        mModelService.setDelegate(this);
         mUsernameEdit = (EditText) findViewById(R.id.username_text);
         mPasswordEdit = (EditText) findViewById(R.id.password_text);
         mRememberMeCheckBox = (CheckBox) findViewById(R.id.rememberMe_checkBox);
@@ -55,15 +49,6 @@ public class MainActivity extends AppCompatActivity {
         {
             mModelService.login(username, password);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //setContentView(R.layout.activity_main);
-        mModelService.setDelegate(this);
-        /*mUsernameEdit = (EditText) findViewById(R.id.username_text);
-        mPasswordEdit = (EditText) findViewById(R.id.password_text);*/
     }
 
     @Override

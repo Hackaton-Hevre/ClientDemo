@@ -26,4 +26,8 @@
     <string name="action_logout">Logout</string>
     <string name="rememberMe_checkbox">Remember me</string>
     <string name="lorem_ipsum">Lorem ipsum</string>
+    <string name="homeActivity_emptyTaskAlert">Empty Task, please enter new one!</string>
+    <string name="homeActivity_taskAdded">OK, Task has been added!</string>
+    <string name="homeActivity_illegalTaskAlert">ILLEGAL TASK, task has not been found</string>
+    <string name="homeActivity_taskExistsAlert">your TASK is already exist</string>
 </resources>
