@@ -3,6 +3,8 @@ package com.hackaton.hevre.clientapplication.Model;
 import android.content.Context;
 import android.location.Location;
 
+import com.hackaton.hevre.clientapplication.Communication.GetRequest;
+import com.hackaton.hevre.clientapplication.Communication.RestTaskCallback;
 import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
 import com.hackaton.hevre.clientapplication.DB.DatabaseAccess;
 
@@ -96,7 +98,30 @@ public class ModelService implements IModelService {
     }
 
     @Override
-    public void addProduct(String userName, String productName) {
+    public void addProduct(final String userName, final String productName) {
+
+        String restUrl = "https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%23%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22" + productName + "%22%40en%20.%0A%20%20%3FitemInstance%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json";
+
+        /*
+        query - instance of
+
+        https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%23%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22milk%22%40en%20.%0A%20%20%3FitemInstance%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json
+
+        query - subclass of
+
+        https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%23%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22milk%22%40en%20.%0A%20%20%3FitemSubclass%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json
+
+         */
+
+        new GetRequest<String>(restUrl, new RestTaskCallback<String>(){
+            @Override
+            public void onTaskComplete(String response){
+                addProduct_afterResponse(userName, productName);
+            }
+        }).execute();
+    }
+
+    private void addProduct_afterResponse(String userName, String productName) {
         TaskingStatus status = TaskingStatus.SUCCESS;
 
         Product product = mProductController.getProductByName(productName);

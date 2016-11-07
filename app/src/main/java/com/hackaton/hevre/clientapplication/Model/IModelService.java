@@ -39,7 +39,7 @@ public interface IModelService {
      * Adding a new product for a user.
      *
      * @param userName - the username
-     * @param productName - the password
+     * @param productName - the product searched
      */
     void addProduct(String userName, String productName);
 
