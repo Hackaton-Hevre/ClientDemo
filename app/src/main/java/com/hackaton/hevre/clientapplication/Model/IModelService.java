@@ -64,7 +64,7 @@ public interface IModelService {
      * @param latitude - the latitude
      * @param radius - the radius
      */
-    ArrayList<BusinessRowItem> getBusinessesInRange(double longitude, double latitude, double radius);
+    ArrayList<Business> getBusinessesInRange(double longitude, double latitude, double radius);
 
 
     /**

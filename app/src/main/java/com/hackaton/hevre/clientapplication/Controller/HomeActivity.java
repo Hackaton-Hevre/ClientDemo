@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hackaton.hevre.clientapplication.Model.Business;
-import com.hackaton.hevre.clientapplication.Model.BusinessRowItem;
 import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
@@ -146,33 +145,16 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
 
         // show another view with businesses locations
         Location locations = mLocationService.getCurrentLocation();
-        ArrayList<BusinessRowItem> businesses = new ArrayList<>();
-        if(null!=locations){
+
+        if(locations != null){
             double longitude = locations.getLongitude();
             double latitude = locations.getLatitude();
-            try {
-                businesses = mModelService.getBusinessesInRange(longitude, latitude, 0.1);
-                if (businesses.isEmpty()) {
-                    //System.out.println("no businesses found");
-                }
-                else {
-                    System.out.println(businesses.get(0));
-                    Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
-                    intent.putExtra("businessesList", businesses);
-                    intent.putExtra("taskName", ((TextView) view).getText());
-                    Bundle b = new Bundle();
-                    startActivity(intent);
-                }
-            }
-            catch (NullPointerException e) {
-                e.printStackTrace();
-                //msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
-            }
-            finally {
-                Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
-                intent.putExtra("businessesList", businesses);
-                startActivity(intent);
-            }
+
+            Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
+            intent.putExtra("taskName", ((TextView) view).getText());
+            intent.putExtra("lng", longitude);
+            intent.putExtra("lat", latitude);
+            startActivity(intent);
         }
     }
 

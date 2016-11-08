@@ -11,6 +11,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,21 +24,26 @@ import java.io.InputStreamReader;
 /**
  * An AsyncTask implementation for performing GETs on the Hypothetical REST APIs.
  */
-public class GetRequest<T> extends AsyncTask<T, T, T> {
+public class GetRequest<T> extends AsyncTask<String, Void, String> {
 
-    private String mRestUrl;
+    /* constants */
+    private static final int OK_STATUS_CODE = 200;
+    private static final String MSG_UNSUCCESS = "Unsuccessful request: %s, ststus code: %d";
+
+    /* data members */
+    private String requestUrl;
     private RestTaskCallback mCallback;
 
     /**
      * Creates a new instance of GetTask with the specified URL and callback.
      *
-     * @param restUrl The URL for the REST API.
+     * @param requestUrl The URL represent the GET request.
      * @param callback The callback to be invoked when the HTTP request
      *            completes.
      *
      */
-    public GetRequest(String restUrl, RestTaskCallback callback){
-        this.mRestUrl = restUrl;
+    public GetRequest(String requestUrl, RestTaskCallback callback){
+        this.requestUrl = requestUrl;
         this.mCallback = callback;
     }
 
@@ -57,8 +68,8 @@ public class GetRequest<T> extends AsyncTask<T, T, T> {
     }
 
     @Override
-    protected T doInBackground(T... params) {
-        T response = null;
+    protected String doInBackground(String... params) {
+        String response = null;
         //Use HTTP Client APIs to make the call.
         //Return the HTTP Response body here.
         // create HttpClient
@@ -69,16 +80,18 @@ public class GetRequest<T> extends AsyncTask<T, T, T> {
             HttpClient httpclient = new DefaultHttpClient();
 
             // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(this.mRestUrl));
-
+            HttpResponse httpResponse = httpclient.execute(new HttpGet(this.requestUrl));
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
+            if (statusCode != OK_STATUS_CODE)
+                System.err.println(String.format(MSG_UNSUCCESS, this.requestUrl, statusCode));
             // receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
 
             // convert inputstream to string
             if(inputStream != null)
-                response = (T) convertInputStreamToString(inputStream);
+                response = convertInputStreamToString(inputStream);
             else
-                response = (T) "Did not work!";
+                response = "Did not work!";
 
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
@@ -88,8 +101,8 @@ public class GetRequest<T> extends AsyncTask<T, T, T> {
     }
 
     @Override
-    protected void onPostExecute(T result) {
-        mCallback.onTaskComplete(result);
+    protected void onPostExecute(String result) {
+//        mCallback.onTaskComplete(result);
         super.onPostExecute(result);
     }
 }

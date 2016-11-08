@@ -20,14 +20,14 @@ import java.util.ArrayList;
  * Created by Ron on 06/11/2016.
  */
 
-public class BusinessListAdapter extends ArrayAdapter<BusinessRowItem> {
+public class BusinessListAdapter extends ArrayAdapter<Business> {
 
     /* constants */
     private static final int DEFAULT_LAYOUT_ID = -1;
 
     /* data members */
     private final Context mContext;
-    private final ArrayList<BusinessRowItem> mBusinesses;
+    private final ArrayList<Business> mBusinesses;
 //    private LocationModelService locationService = new LocationModelService(this.getContext());
 
     /**
@@ -35,7 +35,7 @@ public class BusinessListAdapter extends ArrayAdapter<BusinessRowItem> {
      * @param context
      * @param businesses
      */
-    public BusinessListAdapter(Context context, ArrayList<BusinessRowItem> businesses) {
+    public BusinessListAdapter(Context context, ArrayList<Business> businesses) {
         super(context, DEFAULT_LAYOUT_ID, businesses);
         this.mContext = context;
         this.mBusinesses = businesses;
@@ -57,7 +57,7 @@ public class BusinessListAdapter extends ArrayAdapter<BusinessRowItem> {
         }
 
 
-     class MapClickListener implements View.OnClickListener {
+     private class MapClickListener implements View.OnClickListener {
 
         /* constant */
         private static final String GOOGLE_NAV_URI_PATT = "google.navigation:q=%s,%s";
