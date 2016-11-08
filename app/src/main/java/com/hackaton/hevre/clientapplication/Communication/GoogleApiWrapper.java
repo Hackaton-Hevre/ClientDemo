@@ -127,7 +127,6 @@ public class GoogleApiWrapper {
     }
 
     public String get(String urlReq) {
-        System.out.println("---\tget()\t---");
         HttpURLConnection connection;
         String responseString;
         InputStream responseStream;
@@ -135,15 +134,10 @@ public class GoogleApiWrapper {
             URL url = new URL(urlReq);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            connection.setDoOutput(true);
-//            connection.setDoInput(true);
-//            connection.setRequestProperty("User-Agent", USER_AGENT);
-//            connection.setConnectTimeout(500);
             connection.connect();
 
             int statusCode = connection.getResponseCode();
-            System.out.println("Response Code: " + connection.getResponseCode());
-            if (statusCode != OK_STATUS_CODE) {
+            if (statusCode != HttpURLConnection.HTTP_OK) {
                 System.err.println(String.format(Locale.US, MSG_UNSUCCESS, urlReq, statusCode));
                 return "";
             }
@@ -168,10 +162,7 @@ public class GoogleApiWrapper {
         if (responseString == null) {
             System.out.println("response String is null!!!!!!!!!");
             return new ArrayList<>();
-        } else {
-            System.out.println("this is the response:\n" + responseString + "\n\n");
         }
-
         try {
             JSONObject resJson = new JSONObject(responseString);
             JSONArray results = resJson.getJSONArray(RESP_RESULTS_KEY);
