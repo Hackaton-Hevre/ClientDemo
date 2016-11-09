@@ -49,7 +49,7 @@ public abstract class AppCallbackActivity extends AppCompatActivity {
 
     /* HomeActivity callbacks */
 
-    public void addtask_callback(TaskingStatus status) {
+    public void addtask_callback(TaskingStatus status, List<String> categories) {
 
     }
 
