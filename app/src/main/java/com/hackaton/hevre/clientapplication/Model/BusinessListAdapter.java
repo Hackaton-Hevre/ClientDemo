@@ -28,6 +28,8 @@ public class BusinessListAdapter extends ArrayAdapter<Business> {
     /* data members */
     private final Context mContext;
     private final ArrayList<Business> mBusinesses;
+    private final double myLat;
+    private final double myLng;
 //    private LocationModelService locationService = new LocationModelService(this.getContext());
 
     /**
@@ -35,10 +37,12 @@ public class BusinessListAdapter extends ArrayAdapter<Business> {
      * @param context
      * @param businesses
      */
-    public BusinessListAdapter(Context context, ArrayList<Business> businesses) {
+    public BusinessListAdapter(Context context, ArrayList<Business> businesses, double currentLat, double currentLng) {
         super(context, DEFAULT_LAYOUT_ID, businesses);
         this.mContext = context;
         this.mBusinesses = businesses;
+        this.myLat = currentLat;
+        this.myLng = currentLng;
     }
 
     @Override
@@ -61,6 +65,7 @@ public class BusinessListAdapter extends ArrayAdapter<Business> {
 
         /* constant */
         private static final String GOOGLE_NAV_URI_PATT = "google.navigation:q=%s,%s";
+        private static final String GOOGLE_ROUTE_URI_PATT = "http://maps.google.com/maps?saddr=%f,%f&daddr=%f,%f";
         /* data members */
         private int mPosition;
         /* c-tors */
@@ -71,7 +76,7 @@ public class BusinessListAdapter extends ArrayAdapter<Business> {
         public void onClick(View v) {
             double longitude = mBusinesses.get(mPosition).getLng();
             double latitude = mBusinesses.get(mPosition).getLat();
-            String uri = String.format(GOOGLE_NAV_URI_PATT, latitude, longitude);
+            String uri = String.format(GOOGLE_ROUTE_URI_PATT, myLat, myLng, latitude, longitude);
             Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uri));
             intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
             mContext.startActivity(intent);

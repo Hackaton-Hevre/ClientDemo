@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.BusinessListAdapter;
@@ -48,6 +49,7 @@ public class TaskActivity extends AppCallbackActivity implements AdapterViewComp
 
     @Override
     public void onItemClick(AdapterViewCompat<?> parent, View view, int position, long id) {
+        Toast.makeText(this, ((TextView) view).getText(), Toast.LENGTH_SHORT);
 
     }
 
@@ -74,7 +76,7 @@ public class TaskActivity extends AppCallbackActivity implements AdapterViewComp
         @Override
         protected void onPostExecute(String resp) {
             ArrayList<Business> businesses = googleApi.getBusinesses(resp);
-            ArrayAdapter<Business> adapter = new BusinessListAdapter(this.context, businesses);
+            ArrayAdapter<Business> adapter = new BusinessListAdapter(this.context, businesses, this.lat, this.lng);
             mListView = (ListView) findViewById(R.id.listView);
             mListView.setAdapter(adapter);
         }
