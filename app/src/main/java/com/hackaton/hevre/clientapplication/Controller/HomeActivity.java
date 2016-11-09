@@ -16,6 +16,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,10 +30,6 @@ import com.hackaton.hevre.clientapplication.R;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-//import android.support.v7.app.ActionBarActivity;
-
 public class HomeActivity extends AppCallbackActivity implements OnItemClickListener {
 
     ILocationModelService mLocationService;
@@ -41,6 +38,7 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
     ListView mListView;
     ArrayAdapter<String> mAdapter;
     int mNotificationId = -1;
+    ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +68,9 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         mListView.setOnItemClickListener(this);
 
         mModelService.getUserTaskList(mUserName);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.pbHeaderProgress);
+        mProgressBar.setVisibility(View.GONE);
 
     }
 
@@ -114,13 +115,19 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         }
         else
         {
+            mProgressBar.setVisibility(View.VISIBLE);
             mModelService.addProduct(mUserName, task);
-            mModelService.getUserTaskList(mUserName);
+            //mModelService.getUserTaskList(mUserName);
         }
     }
 
-    public void addtask_callback(TaskingStatus status)
+    public void addtask_callback(TaskingStatus status, List<String> categories)
     {
+        mProgressBar.setVisibility(View.GONE);
+        String categoriesStr = categories.toString();
+
+        Toast.makeText(getBaseContext(), categoriesStr, Toast.LENGTH_LONG).show();
+
         String strMsg = getString(R.string.homeActivity_taskAdded);
         if(status.equals(TaskingStatus.ILLEGAL_TASK))
         {
@@ -131,7 +138,7 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
             strMsg=getString(R.string.homeActivity_taskExistsAlert);
         }
         ((EditText) findViewById(R.id.taskadd_editText)).setText("");
-        Toast.makeText(getBaseContext(), strMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), strMsg, Toast.LENGTH_LONG).show();
     }
 
     public void UserProducts_callback(List<String> userProducts) {
