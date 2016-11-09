@@ -3,14 +3,9 @@ package com.hackaton.hevre.clientapplication.Model;
 import android.content.Context;
 import android.location.Location;
 
-import com.hackaton.hevre.clientapplication.Communication.GetRequest;
-import com.hackaton.hevre.clientapplication.Communication.RestTaskCallback;
+import com.hackaton.hevre.clientapplication.Communication.WikiDataApiWrapper;
 import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
 import com.hackaton.hevre.clientapplication.DB.DatabaseAccess;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,14 +97,14 @@ public class ModelService implements IModelService {
     }
 
     @Override
-    public void addProduct(final String userName, String product) {
+    public List<String> addProduct(final String userName, String product) {
 
-        product = product.trim();
+        /*product = product.trim();
         final String productName  = product.replaceAll(" ", "%20");
 
         final String restUrlInstanceOf = "https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%23%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22" + productName + "%22%40en%20.%0A%20%20%3FitemInstance%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json";
         final String restUrlSubclassOf = "https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%23%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22" + productName + "%22%40en%20.%0A%20%20%3FitemSubclass%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json";
-        final List<String> categories = new ArrayList<>();
+        final List<String> categories = new ArrayList<>();*/
         /*
         query - instance of
 
@@ -121,7 +116,7 @@ public class ModelService implements IModelService {
 
          */
 
-        new GetRequest<String>(restUrlInstanceOf, new RestTaskCallback<String>(){
+        /*new GetRequest<String>(restUrlInstanceOf, new RestTaskCallback<String>(){
             @Override
             public void onTaskComplete(String response){
                 getAllCategories(response);
@@ -133,28 +128,14 @@ public class ModelService implements IModelService {
                     }
                 }).execute();
             }
+        }).execute();*/
 
-            private void getAllCategories(String response) {
-                final JSONObject obj;
-                try {
-                    obj = new JSONObject(response);
-                    final JSONObject result = obj.getJSONObject("results");
-                    final JSONArray bindings = result.getJSONArray("bindings");
-                    final int n = bindings.length();
-                    for (int i = 0; i < n; ++i) {
-                        final JSONObject category = bindings.getJSONObject(i);
-                        final JSONObject categoryValue =  category.getJSONObject("category");
-                        final String value = categoryValue.getString("value");
-                        categories.add(value);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).execute();
+        List<String> categories = WikiDataApiWrapper.getInstance().getAllTags(product);
+        return addProduct_afterResponse(userName, product, categories);
+
     }
 
-    private void addProduct_afterResponse(String userName, String productName, List<String> categories) {
+    private List<String> addProduct_afterResponse(String userName, String productName, List<String> categories) {
         TaskingStatus status = TaskingStatus.SUCCESS;
 
         Product product = mProductController.getProductByName(productName);
@@ -171,8 +152,9 @@ public class ModelService implements IModelService {
             }
         }
 
-        activity.addtask_callback(status, categories);
-        getUserTaskList(userName);
+        categories.add(status.toString());
+
+        return categories;
     }
 
     @Override

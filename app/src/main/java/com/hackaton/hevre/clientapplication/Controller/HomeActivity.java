@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +28,7 @@ import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class HomeActivity extends AppCallbackActivity implements OnItemClickListener {
@@ -115,8 +117,8 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         else
         {
             mProgressBar.setVisibility(View.VISIBLE);
-            mModelService.addProduct(mUserName, task);
-            //mModelService.getUserTaskList(mUserName);
+
+            (new HomeActivity.TagsGetter(this, mUserName, task)).execute();
         }
     }
 
@@ -148,7 +150,6 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        CharSequence msg = ((TextView) view).getText();
 
         // show another view with businesses locations
         Location locations = mLocationService.getCurrentLocation();
@@ -182,12 +183,9 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         if(null!=location){
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            //msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
             // calls the function that will check for relevant close businesses
             mModelService.findRelevantBusinesses(mUserName, location);
         }
-        //Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
-
     }
 
     /* gets all the nearest relevant businesses for the user by his location and sends notification */
@@ -202,5 +200,48 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
         mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
+    }
+
+    public class TagsGetter extends AsyncTask<String, Void, String> {
+
+        /* data members */
+        String userName;
+        String product;
+        Context context;
+
+        public TagsGetter(Context context, String userName, String product) {
+            this.userName = userName;
+            this.product = product;
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            List<String> categories = mModelService.addProduct(userName, product);
+            //mModelService.getUserTaskList(mUserName);
+
+            String result = stringJoin(categories, ", ");
+            return result;
+        }
+
+        private String stringJoin(List<String> list, String delimiter) {
+            StringBuilder str = new StringBuilder();
+
+            for (String string: list) {
+                str.append(string + delimiter);
+            }
+
+            String result = str.toString().substring(0, str.toString().length() - 2);
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String resp) {
+            List<String> categories = Arrays.asList(resp.split("\\s*,\\s*"));
+            String status = categories.get(categories.size() - 1);
+            addtask_callback(TaskingStatus.valueOf(status), categories);
+            mModelService.getUserTaskList(userName);
+        }
     }
 }

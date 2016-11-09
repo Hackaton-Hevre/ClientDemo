@@ -5,6 +5,7 @@ import android.location.Location;
 import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by אביחי on 23/10/2016.
@@ -41,7 +42,7 @@ public interface IModelService {
      * @param userName - the username
      * @param productName - the product searched
      */
-    void addProduct(String userName, String productName);
+    List<String> addProduct(String userName, String productName);
 
     /**
      * Look for relevant businesses for user and location (by the user's tasks) and send push notifications.

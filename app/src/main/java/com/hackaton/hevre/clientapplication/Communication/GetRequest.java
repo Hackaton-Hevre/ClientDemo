@@ -1,108 +1,75 @@
 package com.hackaton.hevre.clientapplication.Communication;
-/**
- * Created by אביחי on 30/09/2016.
- */
 
-import android.os.AsyncTask;
-import android.util.Log;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import org.json.JSONObject;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import android.annotation.TargetApi;
+import android.os.Build;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Locale;
 
 /**
- * An AsyncTask implementation for performing GETs on the Hypothetical REST APIs.
+ * Created by אביחי on 30/09/2016.
  */
-public class GetRequest<T> extends AsyncTask<String, Void, String> {
 
-    /* constants */
+public class GetRequest {
+
+    // response issues
     private static final int OK_STATUS_CODE = 200;
     private static final String MSG_UNSUCCESS = "Unsuccessful request: %s, ststus code: %d";
-
-    /* data members */
-    private String requestUrl;
-    private RestTaskCallback mCallback;
+    private static final String USER_AGENT = "Mozilla/5.0;";
 
     /**
-     * Creates a new instance of GetTask with the specified URL and callback.
+     * helps return the response as String.
      *
-     * @param requestUrl The URL represent the GET request.
-     * @param callback The callback to be invoked when the HTTP request
-     *            completes.
-     *
+     * @param inputStream InputStream object.
+     * @return String represent the given inputStream.
      */
-    public GetRequest(String requestUrl, RestTaskCallback callback){
-        this.requestUrl = requestUrl;
-        this.mCallback = callback;
-    }
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private static String convertInputStreamToString(InputStream inputStream) {
 
-    private String convertInputStreamToString(InputStream inputStream)
-    {
-        try
-        {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            StringBuilder resultString = new StringBuilder(2048);  // large capacity for efficiency
+            while ((line = bufferedReader.readLine()) != null)
+                resultString.append(line);
 
-            //inputStream.close();
-            return result;
-        }
-        catch (Exception e)
-        {
+            return resultString.toString();
+        } catch (Exception e) {
             e.printStackTrace();
             return "Problem has occured";
         }
     }
 
-    @Override
-    protected String doInBackground(String... params) {
-        String response = null;
-        //Use HTTP Client APIs to make the call.
-        //Return the HTTP Response body here.
-        // create HttpClient
-        InputStream inputStream = null;
+    public String get(String urlReq) {
+        HttpURLConnection connection;
+        String responseString;
+        InputStream responseStream;
         try {
+            URL url = new URL(urlReq);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
 
-            // create HttpClient
-            HttpClient httpclient = new DefaultHttpClient();
+            int statusCode = connection.getResponseCode();
+            if (statusCode != HttpURLConnection.HTTP_OK) {
+                System.err.println(String.format(Locale.US, MSG_UNSUCCESS, urlReq, statusCode));
+                return "";
+            }
 
-            // make GET request to the given URL
-            HttpResponse httpResponse = httpclient.execute(new HttpGet(this.requestUrl));
-            int statusCode = httpResponse.getStatusLine().getStatusCode();
-            if (statusCode != OK_STATUS_CODE)
-                System.err.println(String.format(MSG_UNSUCCESS, this.requestUrl, statusCode));
-            // receive response as inputStream
-            inputStream = httpResponse.getEntity().getContent();
-
-            // convert inputstream to string
-            if(inputStream != null)
-                response = convertInputStreamToString(inputStream);
+            responseStream = connection.getInputStream();
+            if (responseStream != null)
+                responseString = convertInputStreamToString(responseStream);
             else
-                response = "Did not work!";
-
+                responseString = "";
         } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+            System.err.println(e.getCause());
+            e.printStackTrace();
+            responseString = "";
         }
-
-        return response;
+        return responseString;
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-//        mCallback.onTaskComplete(result);
-        super.onPostExecute(result);
-    }
 }
