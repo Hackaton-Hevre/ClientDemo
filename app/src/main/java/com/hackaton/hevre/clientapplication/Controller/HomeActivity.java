@@ -4,14 +4,19 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -25,6 +30,7 @@ import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
 import com.hackaton.hevre.clientapplication.Model.ModelService;
+import com.hackaton.hevre.clientapplication.Model.Tag;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
@@ -35,7 +41,7 @@ import java.util.List;
 
 //import android.support.v7.app.ActionBarActivity;
 
-public class HomeActivity extends AppCompatActivity implements OnItemClickListener {
+public class HomeActivity extends AppCompatActivity implements OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     IModelService mModelService;
     ILocationModelService mLocationService;
@@ -63,6 +69,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
             mUserName = b.getString("user");
         }
 
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
 
@@ -74,7 +81,52 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         mListView = (ListView) findViewById(R.id.task_list);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked) {
 
+
+                actionMode.setTitle(mListView.getCheckedItemCount() + "selected items");
+                int color = Color.WHITE;
+                if (checked)
+                {
+                    color = Color.parseColor("#4AB6E7");
+                }
+
+                mListView.getChildAt(position).setBackgroundColor(color);
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+               // ((Toolbar)findViewById(R.id.home_toolbar)).hideOverflowMenu();
+                //Log.i(this.getClass().toString(),"creating action mode");
+                MenuInflater inflater = actionMode.getMenuInflater();
+                inflater.inflate(R.menu.my_cab_menu, menu);
+             //   menu.findItem(R.id.cab_four).setVisible(false);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+                for (int i = 0; i < mListView.getChildCount(); i++)
+                {
+                    mListView.getChildAt(i).setBackgroundColor(Color.WHITE);
+                }
+
+            }
+        });
         mModelService.getUserTaskList(mUserName);
 
     }
@@ -226,5 +278,12 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
         mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        String str = "TEST";
+        Toast.makeText(getBaseContext(), str, Toast.LENGTH_LONG).show();
+        return false;
     }
 }
