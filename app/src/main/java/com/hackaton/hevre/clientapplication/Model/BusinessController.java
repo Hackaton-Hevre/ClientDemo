@@ -16,8 +16,7 @@ public class BusinessController {
 
 
 
-    public BusinessController()
-    {
+    public BusinessController() {
         mBusinesses = new HashMap<>();
 
         Location location;
@@ -26,14 +25,14 @@ public class BusinessController {
 
         // make some static businesses data
 
-//        name = "AmitPharm";
-//        location = new Location(name);
-//        location.setLatitude(32.414133);
-//        location.setLongitude(34.951222);
-//        tags = new LinkedList<>();
-//        tags.add(Tag.TAG_PHARM);
-//        addBusiness(nextId(), name, location, tags);
-//
+        name = "AmitPharm";
+        location = new Location(name);
+        location.setLatitude(32.414133);
+        location.setLongitude(34.951222);
+        tags = new LinkedList<>();
+        tags.add(Tag.TAG_PHARM);
+        addBusiness(nextId() + "", name, location, tags);
+
 //        name = "AvichayCoffee";
 //        location = new Location(name);
 //        location.setLatitude(32.414168);
@@ -91,7 +90,6 @@ public class BusinessController {
 //        tags.add(Tag.TAG_OFFICE_SUPPLY);
 //        addBusiness(nextId(), name, location, tags);
 
-
     }
 
     public boolean addBusiness(String bId, String bName, Location bLocation, List<Tag> bTags)
@@ -112,9 +110,9 @@ public class BusinessController {
     {
         Business b = null;
 
-        if (mBusinesses.containsKey(id))
+        if (mBusinesses.containsKey(id + ""))
         {
-            b = mBusinesses.get(id);
+            b = mBusinesses.get(id + "");
         }
 
         return b;

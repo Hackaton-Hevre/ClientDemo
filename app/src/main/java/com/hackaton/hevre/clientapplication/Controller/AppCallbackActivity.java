@@ -2,13 +2,18 @@ package com.hackaton.hevre.clientapplication.Controller;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LoginStatus;
 import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
+import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +35,9 @@ public abstract class AppCallbackActivity extends AppCompatActivity {
 
     /* Common members */
     IModelService mModelService;
+    ActionBar mActionBar;
+    TextView mTitleTextView;
+    View mCustomView;
 
     /* Common behavior */
 
@@ -37,6 +45,16 @@ public abstract class AppCallbackActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /* Action bar init */
+        mActionBar = getSupportActionBar();
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        LayoutInflater mInflater = LayoutInflater.from(this);
+
+        mCustomView = mInflater.inflate(R.layout.action_bar, null);
+        mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
+
+        /* Model service init */
         mModelService = ModelService.getInstance(this);
         mModelService.setDelegate(this);
     }
@@ -45,6 +63,13 @@ public abstract class AppCallbackActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mModelService.setDelegate(this);
+    }
+
+    protected void setActionBarTitle(String title)
+    {
+        mTitleTextView.setText(title);
+        mActionBar.setCustomView(mCustomView);
+        mActionBar.setDisplayShowCustomEnabled(true);
     }
 
     /* HomeActivity callbacks */

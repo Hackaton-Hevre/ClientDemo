@@ -8,7 +8,6 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,8 +56,8 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
             mUserName = b.getString("user");
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
-        setSupportActionBar(toolbar);
+        setActionBarTitle("My tasks");
+
         mTasks = new ArrayList<String>();
 
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mTasks);
@@ -193,13 +192,15 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
+                        .addAction(R.drawable.notification_template_icon_bg, "BUTTON 1", null) // #0
+                        .addAction(R.drawable.abc_ic_commit_search_api_mtrl_alpha, "BUTTON 2", null)  // #1
                         .setContentTitle("Don't forget your task!")
                         .setContentText(relevantBusinesses.get(0).getName() + " is only " + relevantBusinesses.get(0).getLocation().distanceTo(mLocationService.getCurrentLocation()) + " meters away!");
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         // Builds the notification and issues it.
-        mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
+        //mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
     }
 
     public class TagsGetter extends AsyncTask<String, Void, String> {

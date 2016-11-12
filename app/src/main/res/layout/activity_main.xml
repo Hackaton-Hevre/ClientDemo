@@ -9,7 +9,7 @@
               android:layout_alignEnd="@+id/rememberMe_checkBox">
 
 
-    <android.support.v7.widget.Toolbar
+    <!--<android.support.v7.widget.Toolbar
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -44,7 +44,7 @@
 
             </RelativeLayout>
 
-        </android.support.v7.widget.Toolbar>
+        </android.support.v7.widget.Toolbar>-->
 
     <RelativeLayout
                     android:layout_width="match_parent"

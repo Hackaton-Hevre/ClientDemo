@@ -8,14 +8,14 @@
               android:layout_alignRight="@+id/rememberMe_checkBox"
               android:layout_alignEnd="@+id/rememberMe_checkBox">
 
-    <android.support.v7.widget.Toolbar
+    <!--<android.support.v7.widget.Toolbar
         android:id="@+id/home_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="#4AB6E7"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>-->
 
     <RelativeLayout
                     android:layout_width="match_parent"

@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hackaton.hevre.clientapplication.Model.LoginStatus;
@@ -27,8 +29,11 @@ public class MainActivity extends AppCallbackActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setActionBarTitle("Login");
 
-        setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.main_toolbar));
+
+
+        //setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.main_toolbar));
 
         mUsernameEdit = (EditText) findViewById(R.id.username_text);
         mPasswordEdit = (EditText) findViewById(R.id.password_text);

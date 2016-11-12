@@ -4,18 +4,17 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.internal.widget.AdapterViewCompat;
-import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hackaton.hevre.clientapplication.Communication.GoogleApiWrapper;
 import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.BusinessListAdapter;
 import com.hackaton.hevre.clientapplication.R;
-
-import com.hackaton.hevre.clientapplication.Communication.GoogleApiWrapper;
 
 import java.util.ArrayList;
 
@@ -41,9 +40,8 @@ public class TaskActivity extends AppCallbackActivity implements AdapterViewComp
         double latitude = (double) getIntent().getSerializableExtra("lat");
         double longitude = (double) getIntent().getSerializableExtra("lng");
 
-        Toolbar toolbarTop = (Toolbar) findViewById(R.id.task_toolbar);
-        mTitle = (TextView) toolbarTop.findViewById(R.id.toolbar_title);
-        mTitle.setText(taskName);
+        setActionBarTitle(taskName);
+
         (new BusinessesGetter(this, latitude, longitude)).execute();
     }
 

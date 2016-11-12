@@ -17,7 +17,7 @@ import static android.content.Context.LOCATION_SERVICE;
 public class LocationModelService implements ILocationModelService, LocationListener {
 
     public static final int MIN_TIME = 10000;
-    public static final int MIN_DISTANCE = 1;
+    public static final int MIN_DISTANCE = 0;
     private Context mContext;
     private final LocationManager mLocationManager;
     private Location mLastLocation = null;

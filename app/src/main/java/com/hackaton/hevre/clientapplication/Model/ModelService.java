@@ -2,6 +2,7 @@ package com.hackaton.hevre.clientapplication.Model;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 import com.hackaton.hevre.clientapplication.Communication.WikiDataApiWrapper;
 import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
@@ -99,37 +100,6 @@ public class ModelService implements IModelService {
     @Override
     public List<String> addProduct(final String userName, String product) {
 
-        /*product = product.trim();
-        final String productName  = product.replaceAll(" ", "%20");
-
-        final String restUrlInstanceOf = "https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%23%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22" + productName + "%22%40en%20.%0A%20%20%3FitemInstance%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json";
-        final String restUrlSubclassOf = "https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%23%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22" + productName + "%22%40en%20.%0A%20%20%3FitemSubclass%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json";
-        final List<String> categories = new ArrayList<>();*/
-        /*
-        query - instance of
-
-        https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%23%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22milk%22%40en%20.%0A%20%20%3FitemInstance%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json
-
-        query - subclass of
-
-        .wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%23%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22milk%22%40en%20.%0A%20%20%3FitemSubclass%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json
-
-         */
-
-        /*new GetRequest<String>(restUrlInstanceOf, new RestTaskCallback<String>(){
-            @Override
-            public void onTaskComplete(String response){
-                getAllCategories(response);
-                new GetRequest<String>(restUrlSubclassOf, new RestTaskCallback<String>(){
-                    @Override
-                    public void onTaskComplete(String response){
-                        getAllCategories(response);
-                        addProduct_afterResponse(userName, productName, categories);
-                    }
-                }).execute();
-            }
-        }).execute();*/
-
         List<String> categories = WikiDataApiWrapper.getInstance().getAllTags(product);
         return addProduct_afterResponse(userName, product, categories);
 
@@ -174,7 +144,7 @@ public class ModelService implements IModelService {
         }
         catch (Exception e)
         {
-
+            Log.e("ModelService", e.getStackTrace().toString());
         }
     }
 
