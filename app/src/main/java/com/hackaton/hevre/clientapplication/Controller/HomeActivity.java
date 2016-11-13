@@ -4,13 +4,18 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -23,6 +28,7 @@ import android.widget.Toast;
 import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
+import com.hackaton.hevre.clientapplication.Model.Tag;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
@@ -30,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HomeActivity extends AppCallbackActivity implements OnItemClickListener {
+public class HomeActivity extends AppCallbackActivity implements OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     ILocationModelService mLocationService;
     String mUserName;
@@ -66,7 +72,52 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         mListView = (ListView) findViewById(R.id.task_list);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
+        mListView.setOnItemLongClickListener(this);
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode actionMode, int position, long id, boolean checked) {
 
+
+                actionMode.setTitle(mListView.getCheckedItemCount() + "selected items");
+                int color = Color.WHITE;
+                if (checked)
+                {
+                    color = Color.parseColor("#4AB6E7");
+                }
+
+                mListView.getChildAt(position).setBackgroundColor(color);
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+               // ((Toolbar)findViewById(R.id.home_toolbar)).hideOverflowMenu();
+                //Log.i(this.getClass().toString(),"creating action mode");
+                MenuInflater inflater = actionMode.getMenuInflater();
+                inflater.inflate(R.menu.my_cab_menu, menu);
+             //   menu.findItem(R.id.cab_four).setVisible(false);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+                for (int i = 0; i < mListView.getChildCount(); i++)
+                {
+                    mListView.getChildAt(i).setBackgroundColor(Color.WHITE);
+                }
+
+            }
+        });
         mModelService.getUserTaskList(mUserName);
 
         mProgressBar = (ProgressBar) findViewById(R.id.pbHeaderProgress);
@@ -230,13 +281,11 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
 
         private String stringJoin(List<String> list, String delimiter) {
             StringBuilder str = new StringBuilder();
-
-            for (String string: list) {
+            for (String string : list) {
                 str.append(string + delimiter);
             }
 
             String result = str.toString().substring(0, str.toString().length() - 2);
-
             return result;
         }
 
@@ -247,5 +296,12 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
             addtask_callback(TaskingStatus.valueOf(status), categories);
             mModelService.getUserTaskList(userName);
         }
+    }
+
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        String str = "TEST";
+        Toast.makeText(getBaseContext(), str, Toast.LENGTH_LONG).show();
+        return false;
     }
 }

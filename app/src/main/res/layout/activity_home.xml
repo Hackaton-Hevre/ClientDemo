@@ -41,7 +41,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/task_list"
             android:layout_below="@+id/add_task_button"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            />
 
         <ProgressBar
             android:id="@+id/pbHeaderProgress"
