@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HomeActivity extends AppCallbackActivity implements OnItemClickListener {
+public class HomeActivity extends AppCallbackActivity implements OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     ILocationModelService mLocationService;
     String mUserName;
@@ -267,24 +267,23 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
             this.context = context;
         }
 
-    @Override
+        @Override
         protected String doInBackground(String... strings) {
             List<String> categories = mModelService.addProduct(userName, product);
             //mModelService.getUserTaskList(mUserName);
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
             String result = stringJoin(categories, ", ");
             return result;
         }
-        String str = "TEST";
+
         private String stringJoin(List<String> list, String delimiter) {
             StringBuilder str = new StringBuilder();
-        Toast.makeText(getBaseContext(), str, Toast.LENGTH_LONG).show();
-            for (String string: list) {
+            for (String string : list) {
                 str.append(string + delimiter);
             }
 
             String result = str.toString().substring(0, str.toString().length() - 2);
-
+            return result;
         }
 
         @Override
@@ -294,5 +293,12 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
             addtask_callback(TaskingStatus.valueOf(status), categories);
             mModelService.getUserTaskList(userName);
         }
+    }
+
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        String str = "TEST";
+        Toast.makeText(getBaseContext(), str, Toast.LENGTH_LONG).show();
+        return false;
     }
 }
