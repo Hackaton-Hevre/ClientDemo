@@ -56,7 +56,7 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
             mUserName = b.getString("user");
         }
 
-        setActionBarTitle("My tasks");
+        setActionBarTitle(getString(R.string.homeActivity_title));
 
         mTasks = new ArrayList<String>();
 
@@ -189,18 +189,21 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
 
     /* gets all the nearest relevant businesses for the user by his location and sends notification */
     public void pushNotification_callback(ArrayList<Business> relevantBusinesses) {
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .addAction(R.drawable.notification_template_icon_bg, "BUTTON 1", null) // #0
-                        .addAction(R.drawable.abc_ic_commit_search_api_mtrl_alpha, "BUTTON 2", null)  // #1
-                        .setContentTitle("Don't forget your task!")
-                        .setContentText(relevantBusinesses.get(0).getName() + " is only " + relevantBusinesses.get(0).getLocation().distanceTo(mLocationService.getCurrentLocation()) + " meters away!");
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        // Builds the notification and issues it.
-        //mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
+        for (int i = 0; i < relevantBusinesses.size(); i++)
+        {
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.mipmap.app_icon_white)
+                            .addAction(R.drawable.notification_template_icon_bg, getString(R.string.push_notification_not_now), null)
+                            .addAction(R.drawable.notification_template_icon_bg, getString(R.string.push_notification_buying), null)
+                            .setContentTitle(getString(R.string.push_notification_title))
+                            .setContentText(relevantBusinesses.get(0).getName() + " is only " + relevantBusinesses.get(0).getLocation().distanceTo(mLocationService.getCurrentLocation()) + " meters away!");
+            // Gets an instance of the NotificationManager service
+            NotificationManager mNotifyMgr =
+                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            // Builds the notification and issues it.
+            //mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
+        }
     }
 
     public class TagsGetter extends AsyncTask<String, Void, String> {

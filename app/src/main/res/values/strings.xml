@@ -30,4 +30,18 @@
     <string name="homeActivity_taskAdded">OK, Task has been added!</string>
     <string name="homeActivity_illegalTaskAlert">ILLEGAL TASK, task has not been found</string>
     <string name="homeActivity_taskExistsAlert">your TASK is already exist</string>
+    <string name="push_notification_buying">BUYING</string>
+    <string name="push_notification_not_now">NOT NOW</string>
+    <string name="push_notification_title">Don\'t forget your task!</string>
+    <string name="homeActivity_title">My tasks</string>
+    <string name="mainActivity_title">Login</string>
+    <string name="registerActivity_title">Register</string>
+    <string name="mainActivity_fillAll">Pleas Enter All Of Your Credentials!</string>
+    <string name="mainActivity_wrongPassword">Invalid Password, Please Try Again</string>
+    <string name="mainActivity_wrongUsername">Invalid UserName, Please Try Again</string>
+    <string name="enter_your_username">Enter your username</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="or">or</string>
+    <string name="mainActivity_loginWithOnOfTheFollowingText">You can log in with one of the following</string>
+    <string name="mainActivity_forgotPassword">Forgot your password?</string>
 </resources>

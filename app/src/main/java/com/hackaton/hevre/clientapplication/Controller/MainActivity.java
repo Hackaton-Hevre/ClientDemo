@@ -4,13 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hackaton.hevre.clientapplication.Model.LoginStatus;
@@ -29,7 +27,7 @@ public class MainActivity extends AppCallbackActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setActionBarTitle("Login");
+        setActionBarTitle(getString(R.string.mainActivity_title));
 
 
 
@@ -106,7 +104,7 @@ public class MainActivity extends AppCallbackActivity {
         String userName = mUsernameEdit.getText().toString();
         String password = mPasswordEdit.getText().toString();
         if (userName.equals("") || password.equals("")) {
-            Toast.makeText(getBaseContext(), "Pleas Enter All Of Your Credentials!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), R.string.mainActivity_fillAll, Toast.LENGTH_LONG).show();
         } else {
             mModelService.login(userName, password);
         }
@@ -123,11 +121,11 @@ public class MainActivity extends AppCallbackActivity {
     public void loginCallback(LoginStatus status) {
         if (status.equals(LoginStatus.INVALID_CREDENTIALS))
         {
-            Toast.makeText(getBaseContext(), "Invalid Password, Please Try Again", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), R.string.mainActivity_wrongPassword, Toast.LENGTH_LONG).show();
         }
          else if (status.equals(LoginStatus.NAME_DOESNT_EXIST))
         {
-            Toast.makeText(getBaseContext(), "Invalid UserName, Please Try Again", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), R.string.mainActivity_wrongUsername, Toast.LENGTH_LONG).show();
         }
         else {
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
