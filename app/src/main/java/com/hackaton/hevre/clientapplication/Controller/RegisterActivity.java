@@ -2,7 +2,6 @@ package com.hackaton.hevre.clientapplication.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +20,7 @@ public class RegisterActivity extends AppCallbackActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        setActionBarTitle("Register");
+        setActionBarTitle(getString(R.string.registerActivity_title));
     }
 
 
