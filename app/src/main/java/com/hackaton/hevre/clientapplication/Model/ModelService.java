@@ -1,12 +1,10 @@
 package com.hackaton.hevre.clientapplication.Model;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 
-import com.hackaton.hevre.clientapplication.Controller.HomeActivity;
-import com.hackaton.hevre.clientapplication.Controller.MainActivity;
-import com.hackaton.hevre.clientapplication.Controller.RegisterActivity;
+import com.hackaton.hevre.clientapplication.Communication.WikiDataApiWrapper;
+import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
 import com.hackaton.hevre.clientapplication.DB.DatabaseAccess;
 
 import java.util.ArrayList;
@@ -18,7 +16,7 @@ import java.util.List;
 public class ModelService implements IModelService {
 
     private Context mContext;
-    private Activity activity = null;
+    private AppCallbackActivity activity = null;
     private BusinessController mBusinessController;
     private UserController mUsersController;
     private ProductController mProductController;
@@ -75,7 +73,7 @@ public class ModelService implements IModelService {
     /* All the contracts appears in the interface file */
 
     @Override
-    public void setDelegate(Activity activity) {
+    public void setDelegate(AppCallbackActivity activity) {
         this.mDbTool.setOpenHelper(activity);
         this.activity = activity;
     }
@@ -83,13 +81,13 @@ public class ModelService implements IModelService {
     @Override
     public void login(String userName, String password) {
         LoginStatus status = mUsersController.login(userName, password);
-        ((MainActivity) activity).loginCallback(status);
+        activity.loginCallback(status);
     }
 
     @Override
     public void register(String userName, String password, String email) {
         LoginStatus status = mUsersController.addUser(userName, password, email);
-        ((RegisterActivity) activity).register_callback(status);
+        activity.register_callback(status);
     }
 
     /* a helper function for static demo only */
@@ -99,7 +97,45 @@ public class ModelService implements IModelService {
     }
 
     @Override
-    public void addProduct(String userName, String productName) {
+    public List<String> addProduct(final String userName, String product) {
+
+        /*product = product.trim();
+        final String productName  = product.replaceAll(" ", "%20");
+
+        final String restUrlInstanceOf = "https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%23%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22" + productName + "%22%40en%20.%0A%20%20%3FitemInstance%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json";
+        final String restUrlSubclassOf = "https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%23%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22" + productName + "%22%40en%20.%0A%20%20%3FitemSubclass%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json";
+        final List<String> categories = new ArrayList<>();*/
+        /*
+        query - instance of
+
+        https://query.wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%23%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22milk%22%40en%20.%0A%20%20%3FitemInstance%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json
+
+        query - subclass of
+
+        .wikidata.org/sparql?query=SELECT%20%3Fcategory%0AWHERE%0A%7B%0A%20%20%23%3Fitem%20wdt%3AP31%20%3FitemInstance%20.%20%23%20instance%20of%20%0A%20%20%3Fitem%20wdt%3AP279%20%3FitemSubclass%20.%20%23%20subclass%20of%0A%20%20%3Fitem%20rdfs%3Alabel%20%22milk%22%40en%20.%0A%20%20%3FitemSubclass%20rdfs%3Alabel%20%3Fcategory%20filter%20%28lang%28%3Fcategory%29%20%3D%20%22en%22%29.%0A%7D&format=json
+
+         */
+
+        /*new GetRequest<String>(restUrlInstanceOf, new RestTaskCallback<String>(){
+            @Override
+            public void onTaskComplete(String response){
+                getAllCategories(response);
+                new GetRequest<String>(restUrlSubclassOf, new RestTaskCallback<String>(){
+                    @Override
+                    public void onTaskComplete(String response){
+                        getAllCategories(response);
+                        addProduct_afterResponse(userName, productName, categories);
+                    }
+                }).execute();
+            }
+        }).execute();*/
+
+        List<String> categories = WikiDataApiWrapper.getInstance().getAllTags(product);
+        return addProduct_afterResponse(userName, product, categories);
+
+    }
+
+    private List<String> addProduct_afterResponse(String userName, String productName, List<String> categories) {
         TaskingStatus status = TaskingStatus.SUCCESS;
 
         Product product = mProductController.getProductByName(productName);
@@ -116,7 +152,9 @@ public class ModelService implements IModelService {
             }
         }
 
-        ((HomeActivity) activity).addtask_callback(status);
+        categories.add(status.toString());
+
+        return categories;
     }
 
     @Override
@@ -132,7 +170,7 @@ public class ModelService implements IModelService {
         relevantBusinesses.add(mBusinessController.getBusinessById(0));
         try
         {
-            ((HomeActivity) activity).pushNotification_callback(relevantBusinesses);
+            activity.pushNotification_callback(relevantBusinesses);
         }
         catch (Exception e)
         {
@@ -143,12 +181,15 @@ public class ModelService implements IModelService {
     @Override
     public void getUserTaskList(String userName) {
         List<String> UserProducts = mUsersController.getUserTaskList(userName);
-        ((HomeActivity) activity).UserProducts_callback(UserProducts);
+        activity.UserProducts_callback(UserProducts);
     }
 
     @Override
-    public ArrayList<String> getBusinessesInRange(double longitude, double latitude, double radius) {
-        return mDbTool.getBusinessesInRange(longitude, latitude, radius);
+    public ArrayList<Business> getBusinessesInRange(double longitude, double latitude, double v) {
+        ArrayList<Business> result = new ArrayList();
+//        result.add(new Business("Apple Store", "Beit Eliezer, Ha'sholtim 5", 34.7923249, 31.2504486));
+        return result;
+//        return mDbTool.getBusinessesInRange(longitude, latitude, v);
     }
 
     @Override

@@ -2,22 +2,18 @@ package com.hackaton.hevre.clientapplication.Controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LoginStatus;
-import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.R;
 
 
-public class RegisterActivity extends ActionBarActivity {
+public class RegisterActivity extends AppCallbackActivity {
 
-    IModelService mModelService = ModelService.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +21,6 @@ public class RegisterActivity extends ActionBarActivity {
         setContentView(R.layout.activity_register);
 
         setSupportActionBar((android.support.v7.widget.Toolbar)findViewById(R.id.register_toolbar));
-        mModelService.setDelegate(this);
     }
 
 

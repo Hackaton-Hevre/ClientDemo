@@ -1,7 +1,8 @@
 package com.hackaton.hevre.clientapplication.Model;
 
-import android.app.Activity;
 import android.location.Location;
+
+import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
 
 /**
  * Created by אביחי on 29/10/2016.
@@ -9,7 +10,7 @@ import android.location.Location;
 
 public interface ILocationModelService {
 
-    void setDelegate(Activity activity);
+    void setDelegate(AppCallbackActivity activity);
 
     Location getCurrentLocation();
 

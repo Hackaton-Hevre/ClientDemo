@@ -1,9 +1,11 @@
 package com.hackaton.hevre.clientapplication.Model;
 
-import android.app.Activity;
 import android.location.Location;
 
+import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by אביחי on 23/10/2016.
@@ -15,7 +17,7 @@ public interface IModelService {
      *
      * @param activity - the activity that now holds the modelInstance and will get the callbacks
      */
-    void setDelegate(Activity activity);
+    void setDelegate(AppCallbackActivity activity);
 
     /**
      * Connects the user to the system.
@@ -38,9 +40,9 @@ public interface IModelService {
      * Adding a new product for a user.
      *
      * @param userName - the username
-     * @param productName - the password
+     * @param productName - the product searched
      */
-    void addProduct(String userName, String productName);
+    List<String> addProduct(String userName, String productName);
 
     /**
      * Look for relevant businesses for user and location (by the user's tasks) and send push notifications.
@@ -56,15 +58,15 @@ public interface IModelService {
      * @param userName - states who is the user
      */
     void getUserTaskList(String userName);
-
+    
     /**
      * Gets all the businesses in range radius.
-     *
-     * @param longitude - the longitude
+     *  @param longitude - the longitude
      * @param latitude - the latitude
      * @param radius - the radius
      */
-    ArrayList<String> getBusinessesInRange(double longitude, double latitude, double radius);
+    ArrayList<Business> getBusinessesInRange(double longitude, double latitude, double radius);
+
 
     /**
      * Close the database.

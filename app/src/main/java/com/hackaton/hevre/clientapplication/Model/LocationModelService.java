@@ -1,6 +1,5 @@
 package com.hackaton.hevre.clientapplication.Model;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
@@ -8,7 +7,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import com.hackaton.hevre.clientapplication.Controller.HomeActivity;
+import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -22,7 +21,7 @@ public class LocationModelService implements ILocationModelService, LocationList
     private Context mContext;
     private final LocationManager mLocationManager;
     private Location mLastLocation = null;
-    private Activity activity = null;
+    private AppCallbackActivity activity = null;
 
     public LocationModelService(Context context) {
 
@@ -42,7 +41,7 @@ public class LocationModelService implements ILocationModelService, LocationList
     }
 
     @Override
-    public void setDelegate(Activity activity) {
+    public void setDelegate(AppCallbackActivity activity) {
         this.activity = activity;
     }
 
@@ -57,7 +56,7 @@ public class LocationModelService implements ILocationModelService, LocationList
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
-        ((HomeActivity) activity).locationChanged_callback(mLastLocation);
+        activity.locationChanged_callback(mLastLocation);
     }
 
     @Override

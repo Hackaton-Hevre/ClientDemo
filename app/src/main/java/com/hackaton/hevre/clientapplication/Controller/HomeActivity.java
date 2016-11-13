@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ActionMode;
@@ -22,34 +22,30 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
-import com.hackaton.hevre.clientapplication.Model.IModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
-import com.hackaton.hevre.clientapplication.Model.ModelService;
 import com.hackaton.hevre.clientapplication.Model.Tag;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+public class HomeActivity extends AppCallbackActivity implements OnItemClickListener {
 
-
-//import android.support.v7.app.ActionBarActivity;
-
-public class HomeActivity extends AppCompatActivity implements OnItemClickListener, AdapterView.OnItemLongClickListener {
-
-    IModelService mModelService;
     ILocationModelService mLocationService;
     String mUserName;
     ArrayList<String> mTasks;
     ListView mListView;
     ArrayAdapter<String> mAdapter;
     int mNotificationId = -1;
+    ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +53,7 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mModelService = ModelService.getInstance(this);
         /* set this activity to be delegated by two model classes */
-        mModelService.setDelegate(this);
         mLocationService = new LocationModelService(this);
         mLocationService.setDelegate(this);
 
@@ -72,7 +66,6 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.home_toolbar);
         setSupportActionBar(toolbar);
-
         mTasks = new ArrayList<String>();
 
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mTasks);
@@ -129,6 +122,9 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         });
         mModelService.getUserTaskList(mUserName);
 
+        mProgressBar = (ProgressBar) findViewById(R.id.pbHeaderProgress);
+        mProgressBar.setVisibility(View.GONE);
+
     }
 
     private int getNextNotificationId()
@@ -138,16 +134,9 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mModelService.setDelegate(this);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        //mModelService.closeDb();
-    }
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -175,28 +164,34 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         String task = ((EditText) findViewById(R.id.taskadd_editText)).getText().toString();
         if (task.equals(""))
         {
-            Toast.makeText(getBaseContext(), "Empty Task, pleas enter new one!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), R.string.homeActivity_emptyTaskAlert, Toast.LENGTH_LONG).show();
         }
         else
         {
-            mModelService.addProduct(mUserName, task);
-            mModelService.getUserTaskList(mUserName);
+            mProgressBar.setVisibility(View.VISIBLE);
+
+            (new HomeActivity.TagsGetter(this, mUserName, task)).execute();
         }
     }
 
-    public void addtask_callback(TaskingStatus status)
+    public void addtask_callback(TaskingStatus status, List<String> categories)
     {
-        String strMsg="OK, Task has been added!";
+        mProgressBar.setVisibility(View.GONE);
+        String categoriesStr = categories.toString();
+
+        Toast.makeText(getBaseContext(), categoriesStr, Toast.LENGTH_LONG).show();
+
+        String strMsg = getString(R.string.homeActivity_taskAdded);
         if(status.equals(TaskingStatus.ILLEGAL_TASK))
         {
-            strMsg="ILLEGAL TASK, task has not been found";
+            strMsg = getString(R.string.homeActivity_illegalTaskAlert);
         }
         else if(status.equals(TaskingStatus.TASK_ALREADY_EXISTS))
         {
-            strMsg="your TASK is already exist";
+            strMsg=getString(R.string.homeActivity_taskExistsAlert);
         }
         ((EditText) findViewById(R.id.taskadd_editText)).setText("");
-        Toast.makeText(getBaseContext(), strMsg, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getBaseContext(), strMsg, Toast.LENGTH_LONG).show();
     }
 
     public void UserProducts_callback(List<String> userProducts) {
@@ -207,37 +202,19 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        CharSequence msg = ((TextView) view).getText();
 
         // show another view with businesses locations
         Location locations = mLocationService.getCurrentLocation();
-        ArrayList<String> businesses = new ArrayList<>();
-        if(null!=locations){
+
+        if(locations != null){
             double longitude = locations.getLongitude();
             double latitude = locations.getLatitude();
-            try {
-                businesses = mModelService.getBusinessesInRange(longitude, latitude, 0.1);
-                if (businesses.isEmpty()) {
-                    msg = "No nearby businesses was found";
-                    System.out.println("no businesses found");
-                }
-                else {
-                    System.out.println(businesses.get(0));
-                    Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
-                    intent.putExtra("businessesList", businesses);
-                    Bundle b = new Bundle();
-                    startActivity(intent);
-                }
-            }
-            catch (NullPointerException e) {
-                e.printStackTrace();
-                msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
-            }
-            finally {
-                Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
-                intent.putExtra("businessesList", businesses);
-                startActivity(intent);
-            }
+
+            Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
+            intent.putExtra("taskName", ((TextView) view).getText());
+            intent.putExtra("lng", longitude);
+            intent.putExtra("lat", latitude);
+            startActivity(intent);
         }
     }
 
@@ -258,12 +235,9 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         if(null!=location){
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            msg = String.format("Current Location:\nlon: %s\nlat: %s", longitude, latitude);
             // calls the function that will check for relevant close businesses
             mModelService.findRelevantBusinesses(mUserName, location);
         }
-        //Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT).show();
-
     }
 
     /* gets all the nearest relevant businesses for the user by his location and sends notification */
@@ -280,10 +254,45 @@ public class HomeActivity extends AppCompatActivity implements OnItemClickListen
         mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
     }
 
+    public class TagsGetter extends AsyncTask<String, Void, String> {
+
+        /* data members */
+        String userName;
+        String product;
+        Context context;
+
+        public TagsGetter(Context context, String userName, String product) {
+            this.userName = userName;
+            this.product = product;
+            this.context = context;
+        }
+
     @Override
+        protected String doInBackground(String... strings) {
+            List<String> categories = mModelService.addProduct(userName, product);
+            //mModelService.getUserTaskList(mUserName);
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            String result = stringJoin(categories, ", ");
+            return result;
+        }
         String str = "TEST";
+        private String stringJoin(List<String> list, String delimiter) {
+            StringBuilder str = new StringBuilder();
         Toast.makeText(getBaseContext(), str, Toast.LENGTH_LONG).show();
-        return false;
+            for (String string: list) {
+                str.append(string + delimiter);
+            }
+
+            String result = str.toString().substring(0, str.toString().length() - 2);
+
+        }
+
+        @Override
+        protected void onPostExecute(String resp) {
+            List<String> categories = Arrays.asList(resp.split("\\s*,\\s*"));
+            String status = categories.get(categories.size() - 1);
+            addtask_callback(TaskingStatus.valueOf(status), categories);
+            mModelService.getUserTaskList(userName);
+        }
     }
 }
