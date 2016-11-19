@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.hackaton.hevre.clientapplication.Model.LoginStatus;
 import com.hackaton.hevre.clientapplication.R;
-//test
+
 
 public class MainActivity extends AppCallbackActivity {
 
