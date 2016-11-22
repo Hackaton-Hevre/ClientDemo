@@ -33,23 +33,23 @@ public class ModelService implements IModelService {
         mDbTool.open();
 
         // add some static data
-        addProduct2("avichay", "Akana");
-        addProduct2("avichay", "Banana");
-        addProduct2("aviv", "Disk");
-        addProduct2("aviv", "Bread");
-        addProduct2("ron", "Tablet");
-        addProduct2("ron", "Gibson");
-        addProduct2("moshe", "Acamol");
-        addProduct2("moshe", "Sport shirt");
-        addProduct2("moshe", "Banana");
-        addProduct2("ran", "Sandwich");
-        addProduct2("ran", "Black coffee");
-        addProduct2("ran", "Meat");
-        addProduct2("itamar", "Pencils");
-        addProduct2("itamar", "Toalet paper");
-        addProduct2("rozbaum", "Tooth paste");
-        addProduct2("rozbaum", "Pencils");
-        addProduct2("rozbaum", "Running shoes");
+        addProduct2("avichay", "אוכל כלבים");
+        addProduct2("avichay", "בננה");
+        addProduct2("aviv", "דיסק");
+        addProduct2("aviv", "לחם");
+        addProduct2("ron", "טאבלט");
+        addProduct2("ron", "גיבסון");
+        addProduct2("moshe", "אקאמול");
+        addProduct2("moshe", "חולצת ספורט");
+        addProduct2("moshe", "בננה");
+        addProduct2("ran", "סנדוויץ'");
+        addProduct2("ran", "קפה שחור");
+        addProduct2("ran", "בשר");
+        addProduct2("itamar", "עפרונות");
+        addProduct2("itamar", "נייר טואלט");
+        addProduct2("rozbaum", "משחת שיניים");
+        addProduct2("rozbaum", "עפרונות");
+        addProduct2("rozbaum", "נעלי ריצה");
     }
 
     /* static methods */

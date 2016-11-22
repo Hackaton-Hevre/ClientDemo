@@ -44,4 +44,6 @@
     <string name="or">or</string>
     <string name="mainActivity_loginWithOnOfTheFollowingText">You can log in with one of the following</string>
     <string name="mainActivity_forgotPassword">Forgot your password?</string>
+    <string name="homeActivity_tryRecordingAgain">Try recording again</string>
+    <string name="locationMangerService_openGpsMessage">Please open your GPS</string>
 </resources>

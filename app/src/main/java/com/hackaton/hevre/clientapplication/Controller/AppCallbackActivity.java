@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.IModelService;
@@ -100,5 +101,9 @@ public abstract class AppCallbackActivity extends AppCompatActivity {
 
     public void register_callback(LoginStatus status) {
 
+    }
+
+    public void throwMessage_callback(String s) {
+        Toast.makeText(getBaseContext(), s, Toast.LENGTH_LONG).show();
     }
 }

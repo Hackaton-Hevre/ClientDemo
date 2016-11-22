@@ -15,22 +15,22 @@ public class ProductController {
     {
         mProducts = new HashMap<>();
 
-        addProduct(nextId(), Tag.TAG_PETS, "akana");
-        addProduct(nextId(), Tag.TAG_FOOD, "banana");
-        addProduct(nextId(), Tag.TAG_PHARM, "acamol");
-        addProduct(nextId(), Tag.TAG_SPORT, "running shoes");
-        addProduct(nextId(), Tag.TAG_MUSIC, "gibson");
-        addProduct(nextId(), Tag.TAG_FOOD, "black coffee");
-        addProduct(nextId(), Tag.TAG_PETS, "cat bell");
-        addProduct(nextId(), Tag.TAG_MUSIC, "disk");
-        addProduct(nextId(), Tag.TAG_FOOD, "bread");
-        addProduct(nextId(), Tag.TAG_PHARM, "tooth paste");
-        addProduct(nextId(), Tag.TAG_FOOD, "meat");
-        addProduct(nextId(), Tag.TAG_SPORT, "sport shirt");
-        addProduct(nextId(), Tag.TAG_ELECTRONIC, "tablet");
-        addProduct(nextId(), Tag.TAG_RESTURANTS, "sandwich");
-        addProduct(nextId(), Tag.TAG_PHARM, "toalet paper");
-        addProduct(nextId(), Tag.TAG_OFFICE_SUPPLY, "pencils");
+        addProduct(nextId(), Tag.TAG_PETS, "אוכל כלבים");
+        addProduct(nextId(), Tag.TAG_FOOD, "בננה");
+        addProduct(nextId(), Tag.TAG_PHARM, "אקמול");
+        addProduct(nextId(), Tag.TAG_SPORT, "נעלי ריצה");
+        addProduct(nextId(), Tag.TAG_MUSIC, "גיבסון");
+        addProduct(nextId(), Tag.TAG_FOOD, "קפה שחור");
+        addProduct(nextId(), Tag.TAG_PETS, "פעמון חתול");
+        addProduct(nextId(), Tag.TAG_MUSIC, "דיסק");
+        addProduct(nextId(), Tag.TAG_FOOD, "לחם");
+        addProduct(nextId(), Tag.TAG_PHARM, "משחת שיניים");
+        addProduct(nextId(), Tag.TAG_FOOD, "בשר");
+        addProduct(nextId(), Tag.TAG_SPORT, "חולצת ריצה");
+        addProduct(nextId(), Tag.TAG_ELECTRONIC, "טאבלט");
+        addProduct(nextId(), Tag.TAG_RESTURANTS, "סנדוויץ'");
+        addProduct(nextId(), Tag.TAG_PHARM, "נייר טואלט");
+        addProduct(nextId(), Tag.TAG_OFFICE_SUPPLY, "עפרונות");
     }
 
     public boolean addProduct(int id, Tag tag, String name) {
