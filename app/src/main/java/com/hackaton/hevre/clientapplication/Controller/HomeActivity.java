@@ -8,18 +8,23 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,7 +33,6 @@ import android.widget.Toast;
 import com.hackaton.hevre.clientapplication.Model.Business;
 import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationModelService;
-import com.hackaton.hevre.clientapplication.Model.Tag;
 import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
@@ -36,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class HomeActivity extends AppCallbackActivity implements OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class HomeActivity extends AppCallbackActivity implements OnItemClickListener, AdapterView.OnItemLongClickListener, View.OnTouchListener {
 
     ILocationModelService mLocationService;
     String mUserName;
@@ -45,6 +49,10 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
     ArrayAdapter<String> mAdapter;
     int mNotificationId = -1;
     ProgressBar mProgressBar;
+    SpeechRecognizer mSpeechRecognizer;
+    Intent mSpeechRecognizerIntent;
+    boolean mIsListening;
+    ImageButton mVoiceButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +71,25 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         }
 
         setActionBarTitle(getString(R.string.homeActivity_title));
+        mVoiceButton = (ImageButton) findViewById(R.id.search_voice_btn);
+
+        mVoiceButton.setOnTouchListener(this);
 
         mTasks = new ArrayList<String>();
 
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mTasks);
         mAdapter.setNotifyOnChange(true);
 
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        mSpeechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                this.getPackageName());
+
+
+        SpeechRecognitionListener listener = new SpeechRecognitionListener();
+        mSpeechRecognizer.setRecognitionListener(listener);
         mListView = (ListView) findViewById(R.id.task_list);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
@@ -125,15 +146,13 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
 
     }
 
-    private int getNextNotificationId()
-    {
-        mNotificationId++;
-        return mNotificationId;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mSpeechRecognizer != null)
+        {
+            mSpeechRecognizer.destroy();
+        }
 }
 
     @Override
@@ -158,6 +177,25 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+        // show another view with businesses locations
+        Location locations = mLocationService.getCurrentLocation();
+
+        if(locations != null){
+            double longitude = locations.getLongitude();
+            double latitude = locations.getLatitude();
+
+            Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
+            intent.putExtra("taskName", ((TextView) view).getText());
+            intent.putExtra("lng", longitude);
+            intent.putExtra("lat", latitude);
+            startActivity(intent);
+        }
+    }
+
+    /* on click listener for the add task button, adding a task for the user */
     public void addtask_onclick(View view) {
         String task = ((EditText) findViewById(R.id.taskadd_editText)).getText().toString();
         if (task.equals(""))
@@ -172,8 +210,8 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         }
     }
 
-    public void addtask_callback(TaskingStatus status, List<String> categories)
-    {
+    /* callback handling the result of the add task operation */
+    public void addtask_callback(TaskingStatus status, List<String> categories) {
         mProgressBar.setVisibility(View.GONE);
         String categoriesStr = categories.toString();
 
@@ -192,28 +230,17 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         //Toast.makeText(getBaseContext(), strMsg, Toast.LENGTH_LONG).show();
     }
 
+    /* callback that refreshes the users tasks list */
     public void UserProducts_callback(List<String> userProducts) {
         mTasks.clear();
         mTasks.addAll(userProducts);
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-        // show another view with businesses locations
-        Location locations = mLocationService.getCurrentLocation();
-
-        if(locations != null){
-            double longitude = locations.getLongitude();
-            double latitude = locations.getLatitude();
-
-            Intent intent = new Intent(HomeActivity.this, TaskActivity.class);
-            intent.putExtra("taskName", ((TextView) view).getText());
-            intent.putExtra("lng", longitude);
-            intent.putExtra("lat", latitude);
-            startActivity(intent);
-        }
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        String str = "TEST";
+        Toast.makeText(getBaseContext(), str, Toast.LENGTH_LONG).show();
+        return false;
     }
 
     /* handles the logout click */
@@ -238,6 +265,21 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         }
     }
 
+    /* handling the voice record click */
+    public void voice_onClick(View view) {
+        if (!mIsListening)
+        {
+            mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
+        }
+
+    }
+
+    /* returns the next notification id */
+    private int getNextNotificationId() {
+        mNotificationId++;
+        return mNotificationId;
+    }
+
     /* gets all the nearest relevant businesses for the user by his location and sends notification */
     public void pushNotification_callback(ArrayList<Business> relevantBusinesses) {
         for (int i = 0; i < relevantBusinesses.size(); i++)
@@ -253,10 +295,42 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
             NotificationManager mNotifyMgr =
                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             // Builds the notification and issues it.
-            //mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
+            mNotifyMgr.notify(getNextNotificationId(), mBuilder.build());
         }
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
+            case MotionEvent.ACTION_DOWN:
+                v.setPressed(true);
+                v.startAnimation(AnimationUtils.loadAnimation(this, R.anim.abc_grow_fade_in_from_bottom));
+                voice_onClick(v);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_OUTSIDE:
+            case MotionEvent.ACTION_CANCEL:
+                v.setPressed(false);
+                mSpeechRecognizer.stopListening();
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+        }
+
+        return true;
+    }
+
+    /*
+    Inner class - Tag getter
+
+    This class is responsible for getting data from wikidata using the WikiDataApiWrapper and doing
+    asynctask in order to make the request not from the UI thread
+     */
     public class TagsGetter extends AsyncTask<String, Void, String> {
 
         /* data members */
@@ -298,10 +372,75 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         }
     }
 
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+    /*
+    Inner class - SpeechRecognitionListener
 
-        String str = "TEST";
-        Toast.makeText(getBaseContext(), str, Toast.LENGTH_LONG).show();
-        return false;
+    This class implements the RecognitionListener interface and responsible to record the users
+    tasks and print it on the screen
+     */
+    protected class SpeechRecognitionListener implements RecognitionListener {
+
+        @Override
+        public void onBeginningOfSpeech()
+        {
+            //Log.d(TAG, "onBeginingOfSpeech");
+        }
+
+        @Override
+        public void onBufferReceived(byte[] buffer)
+        {
+
+        }
+
+        @Override
+        public void onEndOfSpeech()
+        {
+            //Log.d(TAG, "onEndOfSpeech");
+        }
+
+        @Override
+        public void onError(int error)
+        {
+            //mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
+
+            Toast.makeText(getBaseContext(), R.string.homeActivity_tryRecordingAgain, Toast.LENGTH_LONG).show();
+            //Log.d(TAG, "error = " + error);
+        }
+
+        @Override
+        public void onEvent(int eventType, Bundle params)
+        {
+
+        }
+
+        @Override
+        public void onPartialResults(Bundle partialResults)
+        {
+
+        }
+
+        @Override
+        public void onReadyForSpeech(Bundle params)
+        {
+            //Log.d(TAG, "onReadyForSpeech"); //$NON-NLS-1$
+        }
+
+        @Override
+        public void onResults(Bundle results)
+        {
+            //Log.d(TAG, "onResults"); //$NON-NLS-1$
+            ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            // matches are the return values of speech recognition engine
+            // Use these values for whatever you wish to do
+            if (matches.size() > 0)
+            {
+                ((EditText) findViewById(R.id.taskadd_editText)).setText(matches.get(0));
+            }
+        }
+
+        @Override
+        public void onRmsChanged(float rmsdB)
+        {
+        }
     }
 }
