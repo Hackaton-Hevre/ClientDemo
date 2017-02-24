@@ -30,10 +30,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.Business;
-import com.hackaton.hevre.clientapplication.Model.ILocationModelService;
-import com.hackaton.hevre.clientapplication.Model.LocationModelService;
-import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement.Business;
+import com.hackaton.hevre.clientapplication.Model.LocationService.ILocationModelService;
+import com.hackaton.hevre.clientapplication.Model.LocationService.LocationModelService;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;

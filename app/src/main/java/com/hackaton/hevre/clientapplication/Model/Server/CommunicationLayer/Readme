@@ -1,0 +1,5 @@
+This package is a place holder for the moment our system will have a real server
+
+In this layer we will hold a class dilling with API requests -
+the purpose is to provide all the application clients (Android, IOS, Website)
+to use all the functionality of our server

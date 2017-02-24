@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.LoginStatus;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.LoginStatus;
 import com.hackaton.hevre.clientapplication.R;
 
 

@@ -11,7 +11,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.LoginStatus;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.LoginStatus;
 import com.hackaton.hevre.clientapplication.R;
 
 

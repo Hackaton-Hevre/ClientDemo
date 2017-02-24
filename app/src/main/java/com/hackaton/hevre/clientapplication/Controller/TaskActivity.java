@@ -4,16 +4,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.internal.widget.AdapterViewCompat;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Communication.GoogleApiWrapper;
-import com.hackaton.hevre.clientapplication.Model.Business;
-import com.hackaton.hevre.clientapplication.Model.BusinessListAdapter;
+import com.hackaton.hevre.clientapplication.Model.GooglePlacesService.GoogleApiWrapper;
+import com.hackaton.hevre.clientapplication.Model.GooglePlacesService.IGooglePlacesApi;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement.Business;
 import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class TaskActivity extends AppCallbackActivity implements AdapterViewComp
     private static final int RADIUS = 500;
 
     /* data members */
-    private GoogleApiWrapper googleApi = GoogleApiWrapper.getInstance();
+    private IGooglePlacesApi googleApi = GoogleApiWrapper.getInstance();
     private ListView mListView;
     private TextView mTitle;
 

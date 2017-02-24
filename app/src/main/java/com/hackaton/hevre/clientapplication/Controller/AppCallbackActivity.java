@@ -9,11 +9,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.Business;
-import com.hackaton.hevre.clientapplication.Model.IModelService;
-import com.hackaton.hevre.clientapplication.Model.LoginStatus;
-import com.hackaton.hevre.clientapplication.Model.ModelService;
-import com.hackaton.hevre.clientapplication.Model.TaskingStatus;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement.Business;
+import com.hackaton.hevre.clientapplication.Model.Server.BusinessLayer.IModelService;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.LoginStatus;
+import com.hackaton.hevre.clientapplication.Model.Server.BusinessLayer.ModelService;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
 import java.util.ArrayList;
