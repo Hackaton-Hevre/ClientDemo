@@ -1,4 +1,4 @@
-package com.hackaton.hevre.clientapplication.Model.WikiDataService;
+package com.hackaton.hevre.clientapplication.Model.Server.ServiceLayer.WikiDataService;
 
 import com.hackaton.hevre.clientapplication.Model.Common.GetRequest;
 

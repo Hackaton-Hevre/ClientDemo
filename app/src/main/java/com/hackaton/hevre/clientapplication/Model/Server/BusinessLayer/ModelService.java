@@ -4,18 +4,19 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
-import com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.IDAL;
-import com.hackaton.hevre.clientapplication.Model.WikiDataService.IWikiDataApi;
-import com.hackaton.hevre.clientapplication.Model.WikiDataService.WikiDataApiWrapper;
 import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
-import com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.DatabaseAccess;
+import com.hackaton.hevre.clientapplication.Model.Server.BusinessLayer.BusinessManagement.BusinessController;
+import com.hackaton.hevre.clientapplication.Model.Server.BusinessLayer.BusinessManagement.IBusinessController;
+import com.hackaton.hevre.clientapplication.Model.Server.BusinessLayer.ProductManagement.IProductController;
+import com.hackaton.hevre.clientapplication.Model.Server.BusinessLayer.ProductManagement.ProductController;
+import com.hackaton.hevre.clientapplication.Model.Server.BusinessLayer.UserManagement.IUserController;
+import com.hackaton.hevre.clientapplication.Model.Server.BusinessLayer.UserManagement.UserController;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement.Business;
-import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement.BusinessController;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.LoginStatus;
-import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement.Product;
-import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement.ProductController;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.TaskingStatus;
-import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.UserManagement.UserController;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement.Product;
+import com.hackaton.hevre.clientapplication.Model.Server.ServiceLayer.WikiDataService.IWikiDataApi;
+import com.hackaton.hevre.clientapplication.Model.Server.ServiceLayer.WikiDataService.WikiDataApiWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,20 +28,16 @@ public class ModelService implements IModelService {
 
     private Context mContext;
     private AppCallbackActivity activity = null;
-    private BusinessController mBusinessController;
-    private UserController mUsersController;
-    private ProductController mProductController;
+    private IBusinessController mBusinessController;
+    private IUserController mUsersController;
+    private IProductController mProductController;
     private static ModelService instance;
-    private IDAL mDbTool;
 
     private ModelService(Context context){
         mContext = context;
-        mBusinessController = new BusinessController();
-        mUsersController = new UserController();
-        mProductController = new ProductController();
-        /* TODO : move the data access down to the domain layer for better modularity */
-        mDbTool = DatabaseAccess.getInstance(context);
-        mDbTool.open();
+        mBusinessController = BusinessController.getInstance(context);
+        mUsersController = UserController.getInstance();
+        mProductController = ProductController.getInstance();
 
         /* TODO : remove this static data and replace it with word analyzer */
         // add some static data
@@ -86,7 +83,7 @@ public class ModelService implements IModelService {
 
     @Override
     public void setDelegate(AppCallbackActivity activity) {
-        this.mDbTool.setOpenHelper(activity);
+        this.mBusinessController.setDBOpenHelper(activity);
         this.activity = activity;
     }
 
@@ -176,7 +173,7 @@ public class ModelService implements IModelService {
 
     @Override
     public void closeDb() {
-        mDbTool.close();
+        //mDbTool.close();
     }
 
 

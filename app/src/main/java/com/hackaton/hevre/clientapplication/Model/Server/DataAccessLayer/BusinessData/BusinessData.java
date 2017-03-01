@@ -1,7 +1,12 @@
-package com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement;
+package com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.BusinessData;
 
+import android.content.Context;
 import android.location.Location;
 
+import com.hackaton.hevre.clientapplication.Controller.AppCallbackActivity;
+import com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.DatabaseAccess;
+import com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.IDAL;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement.Business;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement.Tag;
 
 import java.util.HashMap;
@@ -9,24 +14,36 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by אביחי on 23/10/2016.
+ * Created by אביחי on 01/03/2017.
  */
-public class BusinessController {
 
+public class BusinessData implements IBusinessData {
+
+    private static BusinessData instance = null;
     private HashMap<String, Business> mBusinesses;
     private static int mIdCounter = -1;
+    private IDAL mDbTool;
 
+    public static BusinessData getInstance(Context context)
+    {
+        if (instance == null)
+        {
+            instance = new BusinessData(context);
+        }
+        return instance;
+    }
 
-
-    public BusinessController() {
+    private BusinessData(Context context) {
         mBusinesses = new HashMap<>();
+
+        mDbTool = DatabaseAccess.getInstance(context);
+        mDbTool.open();
 
         Location location;
         LinkedList<Tag> tags;
         String name;
 
         // make some static businesses data
-
         name = "AmitPharm";
         location = new Location(name);
         location.setLatitude(32.414133);
@@ -94,7 +111,7 @@ public class BusinessController {
 
     }
 
-    public boolean addBusiness(String bId, String bName, Location bLocation, List<Tag> bTags)
+    private boolean addBusiness(String bId, String bName, Location bLocation, List<Tag> bTags)
     {
         boolean isAdded = false;
 
@@ -120,10 +137,14 @@ public class BusinessController {
         return b;
     }
 
+    public void setDBOpenHelper(AppCallbackActivity activity)
+    {
+        this.mDbTool.setOpenHelper(activity);
+    }
+
     private int nextId()
     {
         mIdCounter++;
         return mIdCounter;
     }
-
 }

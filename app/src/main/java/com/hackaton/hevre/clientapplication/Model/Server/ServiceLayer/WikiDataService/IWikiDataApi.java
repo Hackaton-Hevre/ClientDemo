@@ -1,4 +1,4 @@
-package com.hackaton.hevre.clientapplication.Model.WikiDataService;
+package com.hackaton.hevre.clientapplication.Model.Server.ServiceLayer.WikiDataService;
 
 import java.util.List;
 

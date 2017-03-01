@@ -8,7 +8,8 @@ public enum LoginStatus {
     INVALID_CREDENTIALS(2),
     NAME_ALREADY_EXISTS(3),
     NAME_DOESNT_EXIST(4),
-    MAIL_ALREADY_EXIST(5);
+    MAIL_ALREADY_EXIST(5),
+    ERROR(6);
 
     private final int value;
 

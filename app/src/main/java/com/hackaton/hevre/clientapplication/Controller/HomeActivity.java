@@ -181,7 +181,7 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
         // show another view with businesses locations
-        Location locations = mLocationService.getCurrentLocation();
+        Location locations = mLocationService.getCurrentLocation();//getCurrentLocation();
 
         if(locations != null){
             double longitude = locations.getLongitude();

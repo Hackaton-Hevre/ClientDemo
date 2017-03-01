@@ -1,17 +1,32 @@
-package com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement;
+package com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.ProductData;
+
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement.Product;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement.Tag;
 
 import java.util.HashMap;
 
 /**
- * Created by אביחי on 23/10/2016.
+ * Created by אביחי on 01/03/2017.
  */
-public class ProductController {
+
+public class ProductData implements IProductData {
 
     // product name to product
     HashMap<String, Product> mProducts;
     private int mIdCounter = -1;
 
-    public ProductController()
+    private static ProductData instance = null;
+
+    public static ProductData getInstance()
+    {
+        if (instance == null)
+        {
+            instance = new ProductData();
+        }
+        return instance;
+    }
+
+    private ProductData()
     {
         mProducts = new HashMap<>();
 
@@ -33,7 +48,18 @@ public class ProductController {
         addProduct(nextId(), Tag.TAG_OFFICE_SUPPLY, "עפרונות");
     }
 
-    public boolean addProduct(int id, Tag tag, String name) {
+    public Product getProductByName(String productName) {
+        Product product = null;
+
+        if (mProducts.containsKey(productName.toLowerCase()))
+        {
+            product = mProducts.get(productName.toLowerCase());
+        }
+
+        return product;
+    }
+
+    private boolean addProduct(int id, Tag tag, String name) {
         boolean isAdded = false;
 
         if (!mProducts.containsKey(name.toLowerCase()))
@@ -46,20 +72,10 @@ public class ProductController {
         return isAdded;
     }
 
-    public Product getProductByName(String productName) {
-        Product product = null;
-
-        if (mProducts.containsKey(productName.toLowerCase()))
-        {
-            product = mProducts.get(productName.toLowerCase());
-        }
-
-        return product;
-    }
-
     private int nextId()
     {
         mIdCounter++;
         return mIdCounter;
     }
+
 }
