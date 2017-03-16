@@ -1,4 +1,7 @@
 <resources>
+    <string name="facebook_app_id">750005431826214</string>
+    <string name="fb_login_protocol_scheme">fb750005431826214</string>
+
     <string name="app_name">HackatonHevere</string>
 
     <string name="title_add_task">Add Task</string>
@@ -46,4 +49,5 @@
     <string name="mainActivity_forgotPassword">Forgot your password?</string>
     <string name="homeActivity_tryRecordingAgain">Try recording again</string>
     <string name="locationMangerService_openGpsMessage">Please open your GPS</string>
+    <string name="mainActivity_loginError">Some Fatal Error Happend, Please Try Again</string>
 </resources>

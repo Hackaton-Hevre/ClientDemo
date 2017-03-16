@@ -2,6 +2,8 @@ package com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.UserDa
 
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.LoginStatus;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement.Product;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.UserManagement.FacebookUser;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.UserManagement.IUser;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.UserManagement.User;
 
 import java.util.HashMap;
@@ -14,9 +16,11 @@ public class UserData implements IUserData {
 
     private static UserData instance = null;
     // username to users
-    HashMap<String, User> mUsers;
+    HashMap<String, IUser> mUsers;
     // mail to users
-    HashMap<String, User> mUsersByEmail;
+    HashMap<String, IUser> mUsersByEmail;
+    // facebookId to users
+    HashMap<String, IUser> mFacebookUsers;
 
     public static UserData getInstance()
     {
@@ -31,6 +35,7 @@ public class UserData implements IUserData {
     {
         mUsers = new HashMap<>();
         mUsersByEmail = new HashMap<>();
+        mFacebookUsers = new HashMap<>();
 
         // add some static data
         addUser("avichay", "12345", "avichay13@gmail.com");
@@ -40,6 +45,7 @@ public class UserData implements IUserData {
         addUser("ran", "12345", "emuna.ran@gmail.com");
         addUser("itamar", "12345", "itamar.cohen@gmail.com");
         addUser("rozbaum", "12345", "adi.rozen@gmail.com");
+        addFacebookUser("10158180273220136", "avichay13@gmail.com");
     }
 
     @Override
@@ -47,7 +53,7 @@ public class UserData implements IUserData {
     {
         LoginStatus status = LoginStatus.SUCCESS;
 
-        User user = new User(userName, password, email.toLowerCase());
+        IUser user = new User(userName, password, email.toLowerCase());
 
         try
         {
@@ -69,7 +75,7 @@ public class UserData implements IUserData {
 
         if (mUsers.containsKey(userName))
         {
-            User user = mUsers.get(userName);
+            IUser user = mUsers.get(userName);
             isAdded = user.user_addProduct(product);
         }
 
@@ -77,8 +83,28 @@ public class UserData implements IUserData {
     }
 
     @Override
-    public User getUserByName(String userName) {
-        User user = null;
+    public LoginStatus addFacebookUser(String facebookKey, String email) {
+        LoginStatus status = LoginStatus.SUCCESS;
+
+        IUser user = new FacebookUser(facebookKey, email.toLowerCase());
+
+        try
+        {
+            mUsers.put(facebookKey, user);
+            mFacebookUsers.put(facebookKey, user);
+            mUsersByEmail.put(email.toLowerCase(), user);
+        }
+        catch (Exception e)
+        {
+            status = LoginStatus.ERROR;
+        }
+
+        return status;
+    }
+
+    @Override
+    public IUser getUserByName(String userName) {
+        IUser user = null;
 
         if (mUsers.containsKey(userName))
         {
@@ -89,8 +115,15 @@ public class UserData implements IUserData {
     }
 
     @Override
-    public User getFacebookUserByEmail(String email) {
-        return null;
+    public IUser getFacebookUserById(String id) {
+        IUser user = null;
+
+        if (mFacebookUsers.containsKey(id))
+        {
+            user = mFacebookUsers.get(id);
+        }
+
+        return user;
     }
 
     @Override

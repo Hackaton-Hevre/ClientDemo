@@ -4,7 +4,7 @@ import com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.UserDat
 import com.hackaton.hevre.clientapplication.Model.Server.DataAccessLayer.UserData.UserData;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.LoginStatus;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductManagement.Product;
-import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.UserManagement.User;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.UserManagement.IUser;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -69,7 +69,7 @@ public class UserController implements IUserController {
     public LoginStatus login(String userName, String password)
     {
         LoginStatus status = LoginStatus.SUCCESS;
-        User user = mUserData.getUserByName(userName);
+        IUser user = mUserData.getUserByName(userName);
 
         if (user == null)
         {
@@ -82,8 +82,35 @@ public class UserController implements IUserController {
         return status;
     }
 
+    @Override
+    public LoginStatus facebookLogin(String facebookKey, String email) {
+        LoginStatus status = LoginStatus.FACEBOOK_LOGIN;
+        IUser user = mUserData.getFacebookUserById(facebookKey);
+
+        if (user == null)
+        {
+            status = mUserData.addFacebookUser(facebookKey, email);
+            if (status.equals(LoginStatus.SUCCESS))
+            {
+                user = mUserData.getFacebookUserById(facebookKey);
+            }
+        }
+
+        if (user != null && !user.checkCredentials(facebookKey))
+        {
+            status = LoginStatus.ERROR;
+        }
+
+        if (status.equals(LoginStatus.SUCCESS))
+        {
+            status = LoginStatus.FACEBOOK_LOGIN;
+        }
+
+        return status;
+    }
+
     public List<String> getUserTaskList(String userName) {
-        User user = mUserData.getUserByName(userName);
+        IUser user = mUserData.getUserByName(userName);
         List<String> userProductsByName = new LinkedList<>();
 
         if (user != null)

@@ -58,6 +58,9 @@ public class ModelService implements IModelService {
         addProduct2("rozbaum", "משחת שיניים");
         addProduct2("rozbaum", "עפרונות");
         addProduct2("rozbaum", "נעלי ריצה");
+        addProduct2("10158180273220136", "בשר");
+        addProduct2("10158180273220136", "עפרונות");
+        addProduct2("10158180273220136", "גיבסון");
     }
 
     /* static methods */
@@ -90,6 +93,12 @@ public class ModelService implements IModelService {
     @Override
     public void login(String userName, String password) {
         LoginStatus status = mUsersController.login(userName, password);
+        activity.loginCallback(status);
+    }
+
+    @Override
+    public void facebookLogin(String facebookKey, String email) {
+        LoginStatus status = mUsersController.facebookLogin(facebookKey, email);
         activity.loginCallback(status);
     }
 

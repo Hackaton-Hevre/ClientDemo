@@ -3,7 +3,7 @@ package com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.UserManage
 /**
  * Created by אביחי on 23/10/2016.
  */
-public class Credentials {
+public class Credentials implements ICredentials {
 
     private String UserName;
     private String Password;

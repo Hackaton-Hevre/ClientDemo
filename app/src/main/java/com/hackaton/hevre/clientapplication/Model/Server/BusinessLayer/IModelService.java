@@ -29,6 +29,14 @@ public interface IModelService {
     void login(String userName, String password);
 
     /**
+     * Connects the user to the system.
+     *
+     * @param facebookKey - the user's facebook key
+     * @param email - the email
+     */
+    void facebookLogin(String facebookKey, String email);
+
+    /**
      * Do a registration for a new user.
      *
      * @param userName - the username

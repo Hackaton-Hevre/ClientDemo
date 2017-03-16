@@ -9,7 +9,8 @@ public enum LoginStatus {
     NAME_ALREADY_EXISTS(3),
     NAME_DOESNT_EXIST(4),
     MAIL_ALREADY_EXIST(5),
-    ERROR(6);
+    FACEBOOK_LOGIN(6),
+    ERROR(7);
 
     private final int value;
 

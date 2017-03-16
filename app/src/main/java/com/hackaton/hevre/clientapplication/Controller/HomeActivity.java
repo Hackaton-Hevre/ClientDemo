@@ -30,9 +30,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement.Business;
+import com.facebook.login.LoginManager;
 import com.hackaton.hevre.clientapplication.Model.LocationService.ILocationModelService;
 import com.hackaton.hevre.clientapplication.Model.LocationService.LocationModelService;
+import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.BusinessManagement.Business;
 import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.Common.TaskingStatus;
 import com.hackaton.hevre.clientapplication.R;
 
@@ -248,7 +249,16 @@ public class HomeActivity extends AppCallbackActivity implements OnItemClickList
         SharedPreferences sharedpreferences = getSharedPreferences(MainActivity.MAIN_ACTIVITY_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putBoolean("rememberMe", false);
+        editor.putString("facebookProfileId", "");
         editor.apply();
+        try
+        {
+            LoginManager.getInstance().logOut();
+        }
+        catch (Exception e)
+        {
+
+        }
         Intent intent = new Intent(HomeActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

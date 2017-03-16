@@ -174,41 +174,16 @@
             android:layout_below="@+id/optionsText"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/instagram"
-                android:background="@null"
-                android:scaleType="fitXY"
-                android:id="@+id/instagramLogin_button"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"/>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/google_nuovo"
-                android:background="@null"
-                android:scaleType="fitXY"
-                android:id="@+id/googleLogin_button"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/instagramLogin_button"
-                android:layout_toEndOf="@+id/instagramLogin_button"
-                android:layout_marginLeft="29dp"
-                android:layout_marginStart="29dp"/>
 
-            <ImageButton
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/facebook"
-                android:background="@null"
-                android:scaleType="fitXY"
-                android:id="@+id/facebookLogin_button"
-                android:layout_marginRight="38dp"
-                android:layout_marginEnd="38dp"
-                android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/instagramLogin_button"
-                android:layout_toStartOf="@+id/instagramLogin_button"/>
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp" />
 
         </RelativeLayout>
 

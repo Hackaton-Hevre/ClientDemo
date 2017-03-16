@@ -18,4 +18,6 @@ public interface IUserController {
     LoginStatus login(String userName, String password);
 
     List<String> getUserTaskList(String userName);
+
+    LoginStatus facebookLogin(String facebookKey, String email);
 }

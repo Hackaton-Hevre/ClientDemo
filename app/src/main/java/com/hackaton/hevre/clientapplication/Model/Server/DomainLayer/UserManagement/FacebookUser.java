@@ -4,16 +4,15 @@ import com.hackaton.hevre.clientapplication.Model.Server.DomainLayer.ProductMana
 
 import java.util.LinkedList;
 
-
 /**
- * Created by אביחי on 23/10/2016.
+ * Created by אביחי on 13/03/2017.
  */
-public class User extends IUser {
 
-    public User (String UserName, String Password, String Email){
-        mCredentials = new Credentials(UserName, Password, Email);
+public class FacebookUser extends IUser {
+
+    public FacebookUser (String facebookId, String email){
+        mCredentials = new FacebookCredentials(facebookId, email);
         mActiveProducts = new LinkedList<Product>();
         mInActiveProducts = new LinkedList<Product>();
     }
-
 }

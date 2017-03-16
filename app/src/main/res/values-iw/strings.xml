@@ -41,4 +41,5 @@
     <string name="mainActivity_forgotPassword">שכחת את הסיסמא?</string>
     <string name="homeActivity_tryRecordingAgain">נסה להקליט שנית</string>
     <string name="locationMangerService_openGpsMessage">אנא הדלק את חיישני המיקום</string>
+    <string name="mainActivity_loginError">תקלה איומה, אנא נסה שנית</string>
 </resources>
